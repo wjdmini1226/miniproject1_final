@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.project.dao.RestaurantDao">
+
+	<insert id="insert" parameterType="restaurant">
+		INSERT INTO restaurant (
+		r_idx,
+		r_member,
+		r_name,
+		r_addr,
+		r_menu,
+		r_category
+		) VALUES (
+		seq_rest.NEXTVAL,
+		#{r_member},
+		#{r_name},
+		#{r_addr},
+		#{r_menu, jdbcType=VARCHAR },
+		#{r_category}
+		)
+	</insert>
+	
+	<select id="selectList_admin" resultType="restaurant">
+    SELECT * FROM 
+    restaurant 
+    ORDER BY r_idx DESC
+	</select>
+
+	<select id="selectList" resultType="restaurant">
+		SELECT
+		r.*,
+		(SELECT COUNT(*) FROM review v WHERE v.v_restaurant = r.r_idx) as r_v_count,	<!-- 
+			레스토랑 r 리뷰 v 리뷰순으로 정렬 -->
+		(SELECT AVG(v_score) FROM review v WHERE v.v_restaurant = r.r_idx) as
+		r_avgscore	<!-- 평균별점으로 정렬 -->
+		FROM restaurant r
+		<where>
+			<if test="r_category != null">r_category = #{r_category}</if>
+			<if test="searchKeyword != null">AND r_name LIKE '%' || #{searchKeyword} || '%'</if>
+		</where>
+		ORDER BY r_avgscore DESC NULLS LAST, r.r_idx DESC
+	</select>
+
+	<select id="selectOne" parameterType="int"
+		resultType="restaurant">
+		SELECT * FROM restaurant
+		WHERE r_member = #{m_idx}
+	</select>
+
+	<update id="update" parameterType="restaurant">
+		UPDATE restaurant
+		SET r_name = #{r_name},
+		r_addr = #{r_addr},
+		r_menu = #{r_menu},
+		r_category = #{r_category}
+		WHERE r_member = #{r_member}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM restaurant
+		WHERE r_idx = #{r_idx}
+	</delete>
+</mapper>
