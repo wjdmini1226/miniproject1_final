@@ -1,0 +1,69 @@
+package com.example.project.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.example.project.dao.ReviewDao;
+import com.example.project.vo.ReviewVo;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+@RequestMapping("/review/")
+public class ReviewController {
+	
+	@Autowired
+	ReviewDao reviewDao;
+	
+	@Autowired
+	HttpServletRequest request;
+	
+	@Autowired
+	HttpSession session;
+	
+	// 전체조회
+	@RequestMapping("list.do")
+	public String list(Model model) {	
+		// vo, dao와 연결하여 list 객체 생성
+		List<ReviewVo> list = reviewDao.selectList();	
+		// model에 list 담기
+		model.addAttribute("list", list);	
+		
+		return "review/review_list";		
+	}	// list() fin
+	
+	//리뷰쓰기 폼 띄우기
+	@RequestMapping("insert_form.do")
+	public String insert_form() { 
+		return "review/review_insert_form";
+	}	// insert_form() fin
+	
+	// 작성폼에서 내용 받아서 db에 끼워넣기
+	@PostMapping("insert.do")
+	public String insert(ReviewVo vo, RedirectAttributes ra) {
+		
+		// 내용 : \n -> <br> 변경
+		String v_content = vo.getV_content().replaceAll("\n", "<br>");
+		
+		// DB insert
+		int res = reviewDao.insert(vo);
+		
+		return "redirect:list.do";
+	}	// insert() fin
+	
+	//리뷰수정 폼 띄우기
+		@RequestMapping("modify_form.do")
+		public String modify_form() {			
+			return "review/review_modify_form";
+	}	// modify_form() fin
+		
+		
+
+}	// class reviewController
