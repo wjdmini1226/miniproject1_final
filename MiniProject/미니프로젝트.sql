@@ -1,3 +1,4 @@
+/*
 -- 회원
 CREATE TABLE member (
 m_idx			NUMBER			PRIMARY KEY,
@@ -41,7 +42,7 @@ b_modifydate	DATE			DEFAULT SYSDATE NOT NULL
 );
 
 -- 댓글
-CREATE TABLE comment (
+CREATE TABLE t_comment (
 c_idx			NUMBER			PRIMARY KEY,
 c_member		NUMBER			REFERENCES member(m_idx) ON DELETE CASCADE,
 c_board			NUMBER			REFERENCES board(b_idx) ON DELETE CASCADE,
@@ -74,8 +75,31 @@ CREATE SEQUENCE seq_board START WITH 1;
 
 CREATE SEQUENCE seq_b_img START WITH 1;
 
-CREATE SEQUENCE seq_comment START WITH 1;
+CREATE SEQUENCE seq_t_comment START WITH 1;
 
 CREATE SEQUENCE seq_news START WITH 1;
 
 CREATE SEQUENCE seq_n_img START WITH 1;
+
+-- 테이블 및 시퀀스 지우개
+DROP TABLE t_comment;
+DROP TABLE review;
+DROP TABLE board;
+DROP TABLE restaurant;
+DROP TABLE news;
+DROP TABLE member;
+DROP SEQUENCE seq_member;
+DROP SEQUENCE seq_rest;
+DROP SEQUENCE seq_review;
+DROP SEQUENCE seq_v_img;
+DROP SEQUENCE seq_board;
+DROP SEQUENCE seq_b_img;
+DROP SEQUENCE seq_t_comment;
+DROP SEQUENCE seq_news;
+DROP SEQUENCE seq_n_img;
+drop sequence seq_comment;
+ -- 아래 두줄은 삭제 성공여부 알기 위한 검사용
+SELECT table_name FROM user_tables ORDER BY table_name;
+SELECT sequence_name FROM user_sequences;
+
+*/

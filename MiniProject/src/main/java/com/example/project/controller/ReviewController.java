@@ -60,10 +60,16 @@ public class ReviewController {
 	
 	//리뷰수정 폼 띄우기
 		@RequestMapping("modify_form.do")
-		public String modify_form() {			
+		public String modify_form(Model model) {	
+			// vo, dao와 연결하여 list 객체 생성
+			List<ReviewVo> list = reviewDao.selectList();	
+			// model에 list 담기
+			model.addAttribute("list", list);			
+			
 			return "review/review_modify_form";
 	}	// modify_form() fin
 		
+	// 리뷰수정
 		
 
 }	// class reviewController

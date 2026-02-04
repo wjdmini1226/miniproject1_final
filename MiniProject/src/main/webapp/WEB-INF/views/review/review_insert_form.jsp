@@ -7,6 +7,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
+<!-- CKEditor 4 -->
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+
 <html>
 <head>
 <meta charset="UTF-8">
@@ -25,7 +28,11 @@
 <script type="text/javascript">
 	function send(f){
 			let v_title = f.v_title.value.trim();
-			let v_content = f.v_content.value.trim();
+			//CKEditor 입력값 체크하기 : 각종 tag나 공백을 지우기
+			let v_content = CKEDITOR.instances.v_content.getData();
+			v_content = v_content.replace(/<[^>]*>/g, '').trim();
+			v_content = v_content.replace(/\s+/g, '');
+			v_content = v_content.replaceAll("<br />","").replaceAll("&nbsp;","");
 			
 			if(v_title==""){
 				alert("제목을 입력하세요");
