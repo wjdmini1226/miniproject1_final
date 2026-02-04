@@ -139,26 +139,27 @@
 				<div class="common">
 					<label>점수 선택:</label><br>
 				    <label class="radio-inline">
-				      <input type="radio" name="v_score" value="1" ${v_score == 1 ? "checked" : ""}> 1
+				      <input type="radio" name="v_score" value="1" ${vo.v_score == 1 ? "checked" : ""}> 1
 				    </label>
 				    <label class="radio-inline">
-				      <input type="radio" name="v_score" value="2" ${v_score == 2 ? "checked" : ""}> 2
+				      <input type="radio" name="v_score" value="2" ${vo.v_score == 2 ? "checked" : ""}> 2
 				    </label>
 				    <label class="radio-inline">
-				      <input type="radio" name="v_score" value="3" ${v_score == 3 ? "checked" : ""}> 3
+				      <input type="radio" name="v_score" value="3" ${vo.v_score == 3 ? "checked" : ""}> 3
 				    </label>
 				    <label class="radio-inline">
-				      <input type="radio" name="v_score" value="4" ${v_score == 4 ? "checked" : ""}> 4
+				      <input type="radio" name="v_score" value="4" ${vo.v_score == 4 ? "checked" : ""}> 4
 				    </label>
 				    <label class="radio-inline">
-				      <input type="radio" name="v_score" value="5" ${v_score == 5 ? "checked" : ""}> 5
+				      <input type="radio" name="v_score" value="5" ${vo.v_score == 5 ? "checked" : ""}> 5
 				    </label>
 				</div>
 				
 				<!-- 내용 -->
 				<div class="common">
 					<label>내용</label>
-					<textarea class="form-control" rows="6" cols="" name="v_content" value="${ vo.v_content }">												
+					<textarea class="form-control" rows="6" cols="" name="v_content">
+						${ vo.v_content }												
 					</textarea>
 						<script>
 							// Replace the <textarea id="editor1"> with a CKEditor
@@ -200,6 +201,8 @@
 			</div>
 		</div>	
 	</div>
+	
+	<input type="hidden" name="v_idx" value="${vo.v_idx}">
 	 
 </form>
 

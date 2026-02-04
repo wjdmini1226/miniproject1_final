@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 전체조회 -->
 	<select id="selectList" resultType="review">
 		select * from review
-		order by v_regdate desc
+		order by v_idx desc
 	</select>
 	
 	<!-- 1개선택(식당번호) -->
@@ -63,7 +63,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				v_score		= #{v_score},
 				v_title		= #{v_title},
 				v_content	= #{v_content},
-				v_date		= sysdate
+				v_regdate		= sysdate
+			where v_idx = #{v_idx}	
 	</update>
 	
 	<!-- 삭제 -->
