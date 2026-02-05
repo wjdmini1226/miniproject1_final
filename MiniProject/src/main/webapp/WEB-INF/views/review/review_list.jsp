@@ -32,8 +32,26 @@
 	
 	</script>
 
+	<!-- KAKAO MAPS -->
+	<script type="text/javascript" 
+	src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=60c46c644f3be913dd3a7af2d733d805"></script>
+	<script>
+	window.onload = function() {
+    var mapContainer = document.getElementById('map');
+    var mapOption = { 
+    	// 제주도의 카카오 본사 좌표에서 지도가 시작한다	
+        center: new kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3
+    };	// mapOption()
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+	}	// 무명함수 function()
+	</script>
+
   </head>
 <body>
+
+	<div id="map" style="width:500px;height:400px;"></div>
+
 	<div id="box">
 			
 		<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
