@@ -12,7 +12,7 @@
     height: 900px;
 }
 
-#menu_wrap {width:300px;height:100%;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;
+#menu_wrap {width:300px;height:100%;margin:10px 0 30px 10px;padding:5px;/*overflow-y:auto;*/
 			background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
 .bg_white {background:#fff;}
 #menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}

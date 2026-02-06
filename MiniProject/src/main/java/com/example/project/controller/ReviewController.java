@@ -51,7 +51,7 @@ public class ReviewController {
 	public String insert(ReviewVo vo, RedirectAttributes ra) {
 		
 		// 내용 : \n -> <br> 변경
-		String v_content = vo.getV_content().replaceAll("\n", "<br>");
+		String v_content = vo.getV_content().replaceAll("\n", "<br>");		
 		
 		// DB insert
 		int res = reviewDao.insert(vo);

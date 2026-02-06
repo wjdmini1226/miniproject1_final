@@ -14,17 +14,6 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	
-	<style type="text/css">
-		#box{	width		: 1000px;
-				margin		: auto;
-				margin-top	: 50px;			}
-				
-		#title{	text-align	: center;
-				font-size	: 26px;
-				text-shadow	: 1px 1px 1px black;
-				color		: hotpink;		}		
-	</style>
 
 	<script type="text/javascript">
 	
@@ -32,27 +21,10 @@
 	
 	</script>
 
-	<!-- KAKAO MAPS -->
-	<script type="text/javascript" 
-	src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=60c46c644f3be913dd3a7af2d733d805"></script>
-	<script>
-	window.onload = function() {
-    var mapContainer = document.getElementById('map');
-    var mapOption = { 
-    	// 제주도의 카카오 본사 좌표에서 지도가 시작한다	
-        center: new kakao.maps.LatLng(33.450701, 126.570667),
-        level: 3
-    };	// mapOption()
-    var map = new kakao.maps.Map(mapContainer, mapOption);
-	}	// 무명함수 function()
-	</script>
-
   </head>
 <body>
 
-	<div id="map" style="width:500px;height:400px;"></div>
-
-	<div id="box">
+	<div id="reviewBox" style="width:100%;margin:auto;margin-top:50px;">
 			
 		<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
 			<div class="col-sm-4">
@@ -61,7 +33,7 @@
        		</div>
 		</div>		  
 		
-		<!-- 리뷰목록. 한줄평은 vo 및 sql 수정하여 글자수 줄일 필요성 -->	  
+		<!-- 리뷰목록. 한줄평은 vo 및 sql 수정하여 글자수 줄일 필요성? -->	  
 		<table class="table table-striped table-hover">
 			<tr class="success">
               <th>번호</th>
@@ -77,11 +49,15 @@
         	
         	<c:forEach var="vo"  items="${ list }">
               <tr>
-              
-                <td>${ vo.v_idx }</td>                
+                <!-- line 1 -->
+                <td>${ vo.v_idx }</td>  
+                <!-- line 2 -->              
                 <td>${ vo.v_title }</td>
+                <!-- line 3 -->
                 <td>작성자</td>
+                <!-- line 4 -->
                 <td>식당</td>
+                <!-- line 5 -->
                 <td>                 
                  	<c:forEach begin="1" end="${ vo.v_score }">
                  		<span style="color:gold;">★</span>
@@ -90,17 +66,19 @@
                  		<span style="color:lightgray;">★</span>
                 	</c:forEach>       
                 </td>
+                <!-- line 6 -->
                 <td>${ vo.v_content }</td>
+                <!-- line 7 -->
                 <td>${ vo.v_regdate }</td>
                  
-                <!-- 수정버튼 -->
+                <!-- line 8 : 수정버튼 -->
                 <td><form action="modify_form.do" method="post">
   					<input type="hidden" name="v_idx" value="${vo.v_idx}">
   					<input class="btn btn-success" type="button" value="수정"
   							onclick="this.form.submit()">
 				</form></td>				
             	
-            	<!-- 삭제버튼 -->                 
+            	<!-- line 9 : 삭제버튼 -->                 
                 <td><form action="delete.do" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
   					<input type="hidden" name="v_idx" value="${vo.v_idx}">
   					<input class="btn btn-danger" type="submit" value="삭제">
