@@ -34,6 +34,7 @@
 $(document).ready(function(){
 	console.log("페이지 로딩됨");
 	review_list();
+	rest_list(); // 나중에는 일치함수를 별도로 만들어서 대체해넣자
 });
   
 function review_list(){		
@@ -57,6 +58,28 @@ function review_list(){
 		error	:	function(err){ alert(err.responseText); }	
 	})
 }	// review_list() end
+
+function rest_list(){		
+	
+	// 현재 보고 있는 page 정보를 전역변수에 저장
+	// g_current_comment_page = page;
+	// 이것 살리려면 함수 이름은 review_list(page){}로 간다
+	
+	// ajax로 요청
+	$.ajax({
+		url		:	"../restaurant/rest_list.do",
+		data	:	{
+		//			"b_idx" : "${ vo.b_idx }",
+		//			"page"	: page
+					},
+		dataType:	"html",			
+		success	:	function(res_data){						
+					// 댓글목록을 ip=review인 div 넣는다
+					$("#rest_list").html(res_data);
+					},
+		error	:	function(err){ alert(err.responseText); }	
+	})
+}	// restaurant_list() end
  
 </script><!-- review용 js 끝 -->
 
@@ -84,7 +107,7 @@ function review_list(){
 		<div id="map"></div>
 		
 		<!-- 식당영역 -->
-		<div id="restaurant"></div>
+		<div id="rest_list"></div>
 		
 		<!-- 리뷰영역 -->
 		<div id="review"></div>

@@ -6,7 +6,7 @@ t_r_member		NUMBER 			REFERENCES member(m_idx) ON DELETE CASCADE,
 t_r_name			VARCHAR2(100)	NOT NULL,
 t_r_category		VARCHAR2(500),
 t_r_menu			VARCHAR2(2000),
-t_r_avgscore		NUMBER(2,1)		DEFAULT 0 CHECK (r_avgscore BETWEEN 0 AND 5),
+t_r_avgscore		NUMBER(2,1)		DEFAULT 0 CHECK (t_r_avgscore BETWEEN 0 AND 5),
 t_r_addr			VARCHAR2(300)
 ); 
  

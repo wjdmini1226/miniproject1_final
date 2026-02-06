@@ -6,14 +6,15 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 
 import com.example.project.vo.RestaurantVo;
+import com.example.project.vo.TestRestVo;
 
 public interface TestRestDao {
-	List<RestaurantVo>	selectList(Map<String, Object> map);
-	List<RestaurantVo>	selectList_admin();
+	List<TestRestVo>	selectList(Map<String, Object> map);
+	List<TestRestVo>	selectList_admin();
 	
-	RestaurantVo		selectOne(int m_idx);
+	TestRestVo		selectOne(int m_idx);
 	
-	int					insert(RestaurantVo vo);
-	int					update(RestaurantVo vo);
+	int					insert(TestRestVo vo);
+	int					update(TestRestVo vo);
 	int					delete(int r_idx);
 }

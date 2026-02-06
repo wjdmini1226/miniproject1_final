@@ -24,42 +24,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectList_admin" resultType="test_rest">
     SELECT * FROM 
-    restaurant 
-    ORDER BY r_idx DESC
+    test_rest 
+    ORDER BY t_r_idx DESC
 	</select>
 
 	<select id="selectList" resultType="test_rest">
 		SELECT
-		r.*,
-		(SELECT COUNT(*) FROM review v WHERE v.v_restaurant = r.r_idx) as r_v_count,	<!-- 
-			레스토랑 r 리뷰 v 리뷰순으로 정렬 -->
-		(SELECT AVG(v_score) FROM review v WHERE v.v_restaurant = r.r_idx) as
-		r_avgscore	<!-- 평균별점으로 정렬 -->
-		FROM restaurant r
+		tr.*,
+		(SELECT COUNT(*) FROM review v WHERE v.v_restaurant = tr.t_r_idx) as tr_v_count,	
+		<!-- 레스토랑 r 리뷰 v 리뷰순으로 정렬 -->
+		(SELECT AVG(v_score) FROM review v WHERE v.v_restaurant = tr.t_r_idx) as
+		tr_avgscore	<!-- 평균별점으로 정렬 -->
+		FROM test_rest tr
 		<where>
-			<if test="r_category != null">r_category = #{r_category}</if>
-			<if test="searchKeyword != null">AND r_name LIKE '%' || #{searchKeyword} || '%'</if>
+			<if test="t_r_category != null">t_r_category = #{t_r_category}</if>
+			<if test="searchKeyword != null">AND t_r_name LIKE '%' || #{searchKeyword} || '%'</if>
 		</where>
-		ORDER BY r_avgscore DESC NULLS LAST, r.r_idx DESC
+		ORDER BY t_r_avgscore DESC NULLS LAST, tr.t_r_idx DESC
 	</select>
 
 	<select id="selectOne" parameterType="int"
-		resultType="restaurant">
-		SELECT * FROM restaurant
-		WHERE r_member = #{m_idx}
+		resultType="test_rest">
+		SELECT * FROM test_rest
+		WHERE t_r_member = #{m_idx}
 	</select>
 
 	<update id="update" parameterType="test_rest">
-		UPDATE restaurant
-		SET r_name = #{r_name},
-		r_addr = #{r_addr},
-		r_menu = #{r_menu},
-		r_category = #{r_category}
-		WHERE r_member = #{r_member}
+		UPDATE test_rest
+		SET t_r_name = #{t_r_name},
+		t_r_addr = #{t_r_addr},
+		t_r_menu = #{t_r_menu},
+		t_r_category = #{t_r_category}
+		WHERE t_r_member = #{t_r_member}
 	</update>
 
 	<delete id="delete" parameterType="int">
-		DELETE FROM restaurant
-		WHERE r_idx = #{r_idx}
+		DELETE FROM test_rest
+		WHERE t_r_idx = #{t_r_idx}
 	</delete>
 </mapper>

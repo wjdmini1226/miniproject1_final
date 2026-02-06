@@ -10,8 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.project.dao.RestaurantDao;
+import com.example.project.dao.TestRestDao;
 import com.example.project.vo.MemberVo;
 import com.example.project.vo.RestaurantVo;
+import com.example.project.vo.TestRestVo;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -21,6 +23,9 @@ public class RestaurantController {
 
 	@Autowired
 	RestaurantDao restaurantDao;
+	
+	@Autowired
+	TestRestDao testRestDao;
 	
 	// 1. 관리 메인 대시보드
 	@RequestMapping("dashboard.do")
@@ -79,8 +84,17 @@ public class RestaurantController {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		List<RestaurantVo> list = restaurantDao.selectList(map);
+		// List<RestaurantVo> list = restaurantDao.selectList(map);
+		List<TestRestVo> list = testRestDao.selectList(map);
+		
+		model.addAttribute("list", list);
 		
 		return "restaurant/rest_list";
+	}
+	
+	// 5-1. 테스트용임시데이터입력form
+	@RequestMapping("test_insert_form.do")
+	public String test_insert(HttpSession session, Model model) {		
+		return "restaurant/test_rest_insert";
 	}
 }
