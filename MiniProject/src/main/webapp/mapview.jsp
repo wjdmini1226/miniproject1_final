@@ -83,6 +83,9 @@ function review_list(){
 		<!-- 지도 -->
 		<div id="map"></div>
 		
+		<!-- 식당영역 -->
+		<div id="restaurant"></div>
+		
 		<!-- 리뷰영역 -->
 		<div id="review"></div>
       

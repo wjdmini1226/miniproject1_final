@@ -48,7 +48,7 @@
 #pagination .on {font-weight: bold; cursor: default;color:#777;}
 
 #map {
-    width:1000px;height:500px;position:relative;overflow:hidden;text-align:center;
+    width:500px;height:250px;position:relative;overflow:hidden;text-align:center;
 }
 
 #review_wrap {

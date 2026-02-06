@@ -24,7 +24,7 @@
   </head>
 <body>
 
-	<div id="reviewBox" style="width:100%;margin:auto;margin-top:50px;">
+	<div id="reviewBox" style="width:50%;margin:auto;margin-top:50px;">
 			
 		<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
 			<div class="col-sm-4">

@@ -1,5 +1,9 @@
 package com.example.project.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,5 +71,16 @@ public class RestaurantController {
 	    // model.addAttribute("review_list", list);
 		
 		return "restaurant/review_manage";
+	}
+	
+	// 5. 레스토랑 목록 표시
+	@RequestMapping("rest_list.do")
+	public String rest_list(Model model) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		List<RestaurantVo> list = restaurantDao.selectList(map);
+		
+		return "restaurant/rest_list";
 	}
 }
