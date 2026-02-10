@@ -13,7 +13,7 @@ public interface MemberDao {
 	List<MemberVo>	selectList();
 	
 	MemberVo		selectOne(int m_idx);
-	MemberVo 		selectById(@Param("m_id") String m_id);
+	MemberVo 		selectById(String m_id);
 	
 	int				insert(MemberVo vo);
 	int				checkDuplicate(Map<String, Object> map);

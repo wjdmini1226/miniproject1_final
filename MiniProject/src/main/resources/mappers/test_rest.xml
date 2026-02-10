@@ -42,6 +42,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 		ORDER BY t_r_avgscore DESC NULLS LAST, tr.t_r_idx DESC
 	</select>
+	
+	<!-- db와 몇글자 비슷한것 찾기 -->
+	<select id="findSimilarRestaurant" resultType="test_rest">
+		<![CDATA[
+		    SELECT *
+    		FROM test_rest
+    		WHERE 
+        	REPLACE(t_r_name, ' ', '') LIKE '%' || REPLACE(#{name}, ' ', '') || '%'
+        	OR t_r_name LIKE '%' || #{keyword} || '%'
+       	 	OR t_r_addr LIKE '%' || #{address} || '%'
+    		ORDER BY t_r_idx DESC
+	    ]]>
+	</select>
+	
+	<!-- db와 몇글자 비슷한것 찾기2 -->
+	<select id="searchByName" resultType="com.example.project.vo.TestRestVo">
+        SELECT rest_idx, rest_name, rest_addr, rest_tel
+        FROM restaurant
+        WHERE rest_name LIKE '%' || #{keyword} || '%'
+    </select>
 
 	<select id="selectOne" parameterType="int"
 		resultType="test_rest">

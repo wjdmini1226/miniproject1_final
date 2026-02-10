@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>지도+식당검색</title>
 
   <!-- Bootstrap 3.x -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -85,7 +85,7 @@ function rest_list(){
 
 </head>
 <body>
-
+  
 <div class="layout">          
 	
 	<!-- 좌측 : 목록 -->
@@ -107,12 +107,17 @@ function rest_list(){
 		<div id="map"></div>
 		
 		<!-- 식당영역 -->
-		<div id="rest_list"></div>
+		<div id="rest_list_wrap">
+			<div id="rest_list"></div>
+		</div>		
 		
 		<!-- 리뷰영역 -->
-		<div id="review"></div>
+		<div id="review_wrap">
+			<div id="review"></div>
+		</div>	
       
 </div><!-- layout end -->
+
 
 </body>
 </html>

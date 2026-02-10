@@ -46,6 +46,9 @@ public class HomeController {
 	@RequestMapping("login.do")
 	public String login(String m_id, String m_pwd, HttpSession session) {
 		MemberVo member = memberDao.selectById(m_id);
+		
+		System.out.println("입력 id = " + m_id);
+		System.out.println("DB member = " + member);
 
 		if (member != null && member.getM_pwd().equals(m_pwd)) {
 			session.setAttribute("member", member);

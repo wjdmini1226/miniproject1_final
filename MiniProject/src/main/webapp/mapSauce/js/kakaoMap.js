@@ -79,41 +79,89 @@ function displayPlaces(places) {
     // 지도에 표시되고 있는 마커를 제거합니다
     removeMarker();
     
-    for ( var i=0; i<places.length; i++ ) {
+	for (var i = 0; i < places.length; i++) {
 
-        // 마커를 생성하고 지도에 표시합니다
-        var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
-            marker = addMarker(placePosition, i), 
-            itemEl = getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
+	    var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+	        marker = addMarker(placePosition, i),
+	        itemEl = getListItem(i, places[i]);
 
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        bounds.extend(placePosition);
+	    bounds.extend(placePosition);
 
-        // 마커와 검색결과 항목에 mouseover 했을때
-        // 해당 장소에 인포윈도우에 장소명을 표시합니다
-        // mouseout 했을 때는 인포윈도우를 닫습니다
-        (function(marker, title) {
-            kakao.maps.event.addListener(marker, 'mouseover', function() {
-                displayInfowindow(marker, title);
-            });
+	    // ★ place를 클로저로 확실히 고정
+	    (function(marker, place) {
 
-            kakao.maps.event.addListener(marker, 'mouseout', function() {
-                infowindow.close();
-            });
+	        // 마우스 오버
+	        kakao.maps.event.addListener(marker, 'mouseover', function() {
+	            displayInfowindow(marker, place.place_name);
+	        });
+	        kakao.maps.event.addListener(marker, 'mouseout', function() {
+	            infowindow.close();
+	        });
 
-            itemEl.onmouseover =  function () {
-                displayInfowindow(marker, title);
-            };
+			// 마커 클릭 → DB 검색 부분 수정
+			kakao.maps.event.addListener(marker, 'click', function() {
+			    fetch("/restaurant/search.do", {
+			        method: "POST",
+			        headers: { "Content-Type": "application/json" },
+			        body: JSON.stringify({
+			            name: place.place_name,
+			            address: place.address_name
+			        })
+			    })
+			    .then(res => {
+			        // 응답 본문이 비어있는지 확인하여 JSON 에러 방지
+			        return res.text().then(text => text ? JSON.parse(text) : null);
+			    })
+			    .then(data => {
+			        const targetDiv = document.getElementById("rest_list_wrap");
+			        
+			        // 1. DB에 식당이 있는 경우: rest_list.jsp 내용을 가져와 출력
+					// kakaoMap.js 내 마커 클릭 이벤트 부분
+					if (data && data.length > 0) {
+					    // 파라미터를 포함하여 요청 (이름과 주소 전달)
+					    const url = `/restaurant/rest_list.do?name=${encodeURIComponent(place.place_name)}&address=${encodeURIComponent(place.address_name)}`;
+					    
+					    fetch(url)
+					        .then(res => res.text())
+					        .then(html => {
+					            document.getElementById("rest_list_wrap").innerHTML = html;
+					        })
+					        .catch(err => console.error("목록 로드 실패:", err));
+					} 
+			        // 2. DB에 식당이 없는 경우: 등록 유도 버튼 출력
+			        else {
+			            let html = `
+			                <div style="text-align:center; padding:20px;">
+			                    <h4 style="color:#d9534f;">등록되지 않은 식당입니다.</h4>
+			                    <p><strong>${place.place_name}</strong></p>
+			                    <button onclick="location.href='/restaurant/test_insert_form.do'" 
+			                            class="btn btn-primary">
+			                        📝 직접 식당 정보 등록하기
+			                    </button>
+			                </div>
+			            `;
+			            targetDiv.innerHTML = html;
+			        }
+			    })
+			    .catch(err => {
+			        console.error("오류 발생:", err);
+			        document.getElementById("rest_list_wrap").innerHTML = "데이터를 불러오는 중 오류가 발생했습니다.";
+			    });
+			});
 
-            itemEl.onmouseout =  function () {
-                infowindow.close();
-            };
-        })(marker, places[i].place_name);
+	        // 목록 항목 호버
+	        itemEl.onmouseover = function () {
+	            displayInfowindow(marker, place.place_name);
+	        };
+	        itemEl.onmouseout = function () {
+	            infowindow.close();
+	        };
 
-        fragment.appendChild(itemEl);
-    }
+	    })(marker, places[i]);   // ← place 전달
 
+	    fragment.appendChild(itemEl);
+	}	
+	
     // 검색결과 항목들을 검색결과 목록 Element에 추가합니다
     listEl.appendChild(fragment);
     menuEl.scrollTop = 0;
@@ -220,5 +268,37 @@ function displayInfowindow(marker, title) {
 function removeAllChildNodes(el) {   
     while (el.hasChildNodes()) {
         el.removeChild (el.lastChild);
-    }
+    }	
+	
 }
+
+// 카카오에서 클릭한 식당을 DB에 바로 등록
+function insertRestaurantFromKakao(name, address) {
+    if (!confirm(`"${name}" 식당을 DB에 등록하시겠습니까?`)) return;
+
+    fetch("/restaurant/insert_from_kakao.do", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, address: address })
+    })
+    .then(res => {
+        if (!res.ok) {
+            return res.text().then(text => { throw new Error("서버 오류: " + text); });
+        }
+        return res.json();
+    })
+    .then(result => {
+        if (result.success) {
+            alert("✅ 식당이 성공적으로 등록되었습니다!");
+            location.reload();   // 등록 후 바로 정보 표시
+        } else {
+            alert("등록 실패: " + result.message);
+        }
+    })
+    .catch(err => {
+        console.error("등록 실패:", err);
+        alert("등록 중 오류가 발생했습니다.\n콘솔을 확인해주세요.");
+    });
+}
+
+

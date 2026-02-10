@@ -8,6 +8,21 @@ m_nickname		VARCHAR2(100)	NOT NULL UNIQUE,
 m_admin			NUMBER(1)		DEFAULT 0 CHECK (m_admin IN (0, 1, 2)) -- 0 : 일반, 1 : 사장 2 : 관리자
 );
 
+-- 어드민 생성
+INSERT INTO member (
+    m_idx,
+    m_id,
+    m_pwd,
+    m_nickname,
+    m_admin
+) VALUES (
+    seq_member.NEXTVAL,
+    'admin',
+    '1234',
+    'admin',
+    2
+);
+
 -- 식당
 CREATE TABLE restaurant (
 r_idx			NUMBER			PRIMARY KEY,
@@ -101,5 +116,7 @@ drop sequence seq_comment;
  -- 아래 두줄은 삭제 성공여부 알기 위한 검사용
 SELECT table_name FROM user_tables ORDER BY table_name;
 SELECT sequence_name FROM user_sequences;
+
+SELECT * FROM member WHERE m_id = 'admin';
 
 */

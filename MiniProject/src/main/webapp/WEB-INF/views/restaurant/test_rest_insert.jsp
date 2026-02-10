@@ -105,7 +105,7 @@
 				<!-- 이동 -->
 				<div class="common" style="text-align: center;">
 					<input	class="btn btn-success" type="button" value="식당목록으로" 
-							onclick="location.href='mapview.jsp'">
+							onclick="location.href='/map/mapview.do'">
 					<input	class="btn btn-primary" type="button" value="식당추가" 
 							onclick="send(this.form);">
 				</div>
