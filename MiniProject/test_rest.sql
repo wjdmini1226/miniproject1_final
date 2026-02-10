@@ -12,4 +12,6 @@ t_r_addr			VARCHAR2(300)
  
 CREATE SEQUENCE seq_test_rest START WITH 1; 
 
+
+
 */
