@@ -17,7 +17,8 @@
 
 	<script type="text/javascript">
 	
-	function insert_form(){location.href = "test_insert_form.do";}	
+	function insert_form(){location.href = 
+		"${pageContext.request.contextPath}/restaurant/test_insert_form.do";}	
 	
 	</script>
 

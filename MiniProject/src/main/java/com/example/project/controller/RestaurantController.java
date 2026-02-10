@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.project.dao.RestaurantDao;
 import com.example.project.dao.TestRestDao;
@@ -94,7 +95,27 @@ public class RestaurantController {
 	
 	// 5-1. 테스트용임시데이터입력form
 	@RequestMapping("test_insert_form.do")
-	public String test_insert(HttpSession session, Model model) {		
+	public String test_insert_form(HttpSession session, Model model) {		
 		return "restaurant/test_rest_insert";
 	}
+	
+	// 5-2. 테스트용임시데이터입력
+	
+	@RequestMapping("test_insert.do")
+	public String test_insert(TestRestVo vo, HttpSession session, 
+		   RedirectAttributes ra) {
+		
+		// 세션정보 소환
+		MemberVo member = (MemberVo) session.getAttribute("member");
+		// 비로그인시 로그인 유도
+	    if(member == null){return "redirect:/login_form.do";}
+	    // 현재 로그인유저 정보를 멤버정보에 추가
+	    vo.setT_r_member(member.getM_idx());
+		
+		// DB insert
+		int res = testRestDao.insert(vo);
+		
+		return "redirect:mapview.jsp";
+	}
+	
 }
