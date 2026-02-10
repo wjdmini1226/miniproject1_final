@@ -20,12 +20,14 @@
   </head>
 <body>
 
-	<div id="reviewBox" style="width:50%;margin:auto;margin-top:50px;">
+	<div id="reviewBox" style="width:100%;margin:auto;margin-top:10px;">
 			
 		<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
 			<div class="col-sm-4">
-        		<input class="btn btn-primary" type="button" value="식당데이타입력임시"
-        			onclick="insert_form()">
+        		<button onclick="location.href='/restaurant/test_insert_form.do'" 
+		            class="btn btn-primary">
+		        	📝 직접 식당 정보 등록하기
+		        </button> 		       	        
        		</div>
 		</div>		  
 		
@@ -33,13 +35,17 @@
 		<table class="table table-striped table-hover">
 			<tr class="success">
 			  <!-- line 1 -->
-              <th>번호</th>
+              <th width="20%">번호</th>
               <!-- line 2 -->
               <th width="20%">제목</th>
               <!-- line 3 -->
-              <th>메뉴</th>
+              <th width="20%">메뉴</th>
               <!-- line 4 -->
               <th>주소</th>
+              <!-- line 5 -->
+              <th width="20%">평점</th>
+              <!-- line 6 : 삭제버튼을 위한 숨은 자리 -->
+              <th></th>
 
         	</tr>
         	
@@ -52,9 +58,28 @@
                 <!-- line 3 -->
                 <td>${ vo.t_r_menu }</td>
                 <!-- line 4 -->
-                <td>${ vo.t_r_addr }</td>              
-				          
-              </tr>
+                <td>${ vo.t_r_addr }</td>   
+                <!-- line 5 --> 
+                <td>    
+	                <c:forEach begin="1" end="${vo.t_r_avgscore}">
+		             ⭐
+		            </c:forEach>
+		            (${vo.t_r_avgscore}점)      
+				</td>     
+				
+				<!-- admin 만 볼 수 있는 버튼 -->
+				<c:if test="${ member.m_idx eq 1 }">
+					<td>
+                       <!-- form으로 함께 던질 수 있도록 비밀선물 -->	
+                       <form style="display:inline;">
+                       <input type="hidden" name="r_idx" value="${ vo.t_r_idx }">	
+					   <input	class="btn btn-danger" type="button" value="삭제하기"
+					    		onclick="rest_delete(this.form);">
+					   </form>
+					</td>		
+				</c:if>
+				     
+              </tr>                                   
         	</c:forEach> 
 			
 		</table>	

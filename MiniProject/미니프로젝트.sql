@@ -36,6 +36,24 @@ r_avgscore		NUMBER(2,1)		DEFAULT 0 CHECK (r_avgscore BETWEEN 0 AND 5),
 r_addr			VARCHAR2(300)
 );
 
+INSERT INTO restaurant (
+		r_idx,
+		r_member,
+		r_name,
+		r_addr,
+		r_menu,
+		r_category
+		) VALUES (
+		15,
+		1,
+		'르퐁뒤',
+		'대구 중구 동성로1길 26',
+		'스테이크',
+		'양식'
+		)
+
+select * from restaurant;
+
 -- 리뷰
 CREATE TABLE review (
 v_idx			NUMBER			PRIMARY KEY,
@@ -46,6 +64,11 @@ v_title			VARCHAR2(100)	NOT NULL,
 v_content		CLOB,
 v_regdate		DATE			DEFAULT SYSDATE NOT NULL
 );
+
+DROP TABLE review; 
+DROP SEQUENCE seq_review;
+
+select * from review;
 
 -- 게시판
 CREATE TABLE board (

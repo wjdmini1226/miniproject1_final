@@ -22,4 +22,7 @@ public interface TestRestDao {
 	int					insert(TestRestVo vo);
 	int					update(TestRestVo vo);
 	int					delete(int r_idx);
+	
+	
+	
 }

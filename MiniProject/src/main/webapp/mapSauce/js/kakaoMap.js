@@ -122,7 +122,6 @@ function displayPlaces(places) {
 					const restListDiv = document.getElementById("rest_list");
 			        const reviewListDiv = document.getElementById("review_list");
 			        const restWrap = document.getElementById("rest_list_wrap");
-			        const reviewWrap = document.getElementById("review_list_wrap");
             
 		            // 데이터 로드 시 영역을 보여줌 (CSS에서 초기 display가 none인 경우)
 		            if(restWrap) restWrap.style.display = "block";
@@ -141,11 +140,28 @@ function displayPlaces(places) {
 		                    });
 
 		                // 왼쪽 리뷰 목록 로드
-		                const reviewUrl = `/review/review_list.do?t_r_name=${encodeURIComponent(place.place_name)}`;
+		                const reviewUrl = `/review/list.do?t_r_name=${encodeURIComponent(place.place_name)}`;
 		                fetch(reviewUrl)
 		                    .then(res => res.text())
 		                    .then(html => {
-		                        if(reviewListDiv) reviewListDiv.innerHTML = html;
+								if (reviewListDiv) {
+						            // 서버에서 보낸 html 내용이 비어있거나 '검색된 내용이 없습니다' 같은 문구가 포함된 경우 체크
+						            // (tip: 서버의 list.do 결과물에서 데이터가 없을 때 특정 class나 id를 주면 체크가 더 쉽습니다)
+						            if (html.trim() === "" || html.includes("데이터가 없습니다") || html.includes("리뷰가 없습니다")) {
+						                reviewListDiv.innerHTML = `
+						                    <div style="text-align:center; padding:40px 20px; border:1px solid #eee; background:#fafafa; border-radius:8px;">
+						                        <h4 style="color:#666;">아직 작성된 리뷰가 없습니다.</h4>
+						                        <p style="margin:15px 0; color:#888;">이 식당의 첫 번째 리뷰를 남겨주세요!</p>
+						                        <button onclick="location.href='/review/insert_form.do?r_name=${encodeURIComponent(place.place_name)}'" 
+						                                class="btn btn-info" style="font-weight:bold;">
+						                            ✍️ 리뷰 작성하러 가기
+						                        </button>
+						                    </div>
+						                `;
+						            } else {
+						                reviewListDiv.innerHTML = html;
+						            }
+						        } 
 		                    });
 		            } 
 		            // 2. DB에 검색 데이터가 아예 없는 경우
@@ -154,14 +170,14 @@ function displayPlaces(places) {
 		                    <div style="text-align:center; padding:30px; border:1px solid #ddd; background:#fff;">
 		                        <h4 style="color:#d9534f; font-weight:bold;">등록되지 않은 식당입니다.</h4>
 		                        <p style="margin:15px 0;">카카오 맵 정보: <strong>${place.place_name}</strong></p>
-		                        <button onclick="location.href='/restaurant/test_insert_form.do'" 
-		                                class="btn btn-primary">
-		                            📝 직접 식당 정보 등록하기
-		                        </button>
+            <button onclick="location.href='/restaurant/test_insert_form.do?t_r_name=${encodeURIComponent(place.place_name)}'" 
+                    class="btn btn-primary">📝 직접 식당 정보 등록하기
+            </button>
 		                    </div>
 		                `;
-						if(restListDiv) restListDiv.innerHTML = "<h4>등록되지 않은 식당입니다.</h4>";
-						if(reviewListDiv) reviewListDiv.innerHTML = "<h4>리뷰가 없습니다.</h4>";
+						if(restListDiv) restListDiv.innerHTML = noDataHtml;
+						if(reviewListDiv) reviewListDiv.innerHTML = 
+						"<h4>리뷰가 없습니다. 식당이 등록되지 않았다면 먼저 등록해주세요</h4>";
 		            }
 		        })
 		        .catch(err => {

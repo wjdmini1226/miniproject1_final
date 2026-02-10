@@ -84,7 +84,7 @@ function review_list(){
 	
 	// ajax로 요청
 	$.ajax({
-		url		:	"../review/list.do",
+		url		:	"${pageContext.request.contextPath}/review/list.do",
 		dataType:	"html",			
 		success	:	function(res_data){
 					$("#review_list").html(res_data);
@@ -101,7 +101,7 @@ function rest_list(){
 	
 	// ajax로 요청
 	$.ajax({
-		url		:	"../restaurant/rest_list.do",
+		url		:	"${pageContext.request.contextPath}/restaurant/rest_list.do",
 		data	:	{
 		//			"b_idx" : "${ vo.b_idx }",
 		//			"page"	: page
@@ -115,7 +115,49 @@ function rest_list(){
 	})
 }	// restaurant_list() end
 
+function review_delete(f){
 	
+	if(!confirm("정말 이 리뷰를 삭제하시겠습니까?")) return;
+
+    var v_idx = f.v_idx.value; // form 내의 hidden input 값 읽기 
+
+    $.ajax({
+        url     : "${pageContext.request.contextPath}/review/delete.do",
+        type    : "GET", // 또는 POST (컨트롤러 설정에 맞춤)
+        data    : { "v_idx": v_idx },
+        success : function(res_data) {
+            alert("리뷰가 삭제되었습니다.");
+            // 삭제 후 목록을 다시 불러와 화면 갱신 
+            location.replace("${pageContext.request.contextPath}/map/mapview.do"); 
+        },
+        error   : function(err) {
+            alert("삭제 실패: " + err.responseText);
+        }
+    });
+	
+}	// review_delete() end
+
+function rest_delete(f){
+	
+	if(!confirm("정말 이 식당 정보를 삭제하시겠습니까?")) return;
+
+    var r_idx = f.r_idx.value; // form 내의 hidden input 값 읽기 
+
+    $.ajax({
+        url     : "${pageContext.request.contextPath}/restaurant/delete.do",
+        type    : "GET", // 또는 POST (컨트롤러 설정에 맞춤)
+        data    : { "r_idx": r_idx },
+        success : function(res_data) {
+            alert("식당 데이터가 삭제되었습니다.");
+            // 삭제 후 목록을 다시 불러와 화면 갱신 
+            location.replace("${pageContext.request.contextPath}/map/mapview.do");
+        },
+        error   : function(err) {
+            alert("삭제 실패: " + err.responseText);
+        }
+    });
+	
+}	// rest_delete() end
  
 </script><!-- review/rest용 js 끝 -->
 

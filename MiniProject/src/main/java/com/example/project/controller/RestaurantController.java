@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -108,7 +109,10 @@ public class RestaurantController {
 	
 	// 5-1. 테스트용임시데이터입력form
 	@RequestMapping("test_insert_form.do")
-	public String test_insert_form(HttpSession session, Model model) {		
+	public String test_insert_form(String t_r_name, Model model) {
+		
+		model.addAttribute("t_r_name", t_r_name);
+		
 		return "restaurant/test_rest_insert";
 	}
 	
@@ -128,7 +132,7 @@ public class RestaurantController {
 		// DB insert
 		int res = testRestDao.insert(vo);
 		
-		return "redirect:/mapview.do";
+		return "/map/mapview";
 	}
 	
 	@RequestMapping("mapview.do")
@@ -136,7 +140,7 @@ public class RestaurantController {
 	    return "mapview";
 	}
 	
-	// 5-3. 테스트데이터와 카카오 연결
+	// 5-3. 데이터와 카카오 연결
 	@PostMapping("/search.do")
 	@ResponseBody
 	public List<TestRestVo> searchRestaurant(@RequestBody Map<String, String> param) {
@@ -157,7 +161,7 @@ public class RestaurantController {
 	    return testRestDao.findSimilarRestaurant(map);
 	}
 	
-	// 카카오 지도에서 클릭한 식당을 DB에 바로 등록
+	// 5-4 카카오 지도에서 클릭한 식당을 DB에 바로 등록
 	@PostMapping("insert_from_kakao.do")
 	@ResponseBody
 	public Map<String, Object> insertFromKakao(@RequestBody Map<String, String> param, HttpSession session) {
@@ -190,6 +194,57 @@ public class RestaurantController {
 	    }
 
 	    return result;
-	}
+	}	// insertFormKakao
+	
+	// 6. 레스토랑 이름 일치 확인
+	@RequestMapping("check_name.do")
+	@ResponseBody
+	public Map<String, Object> checkName(String r_name) {
+		System.out.println("---> 입력받은 이름: [" + r_name + "]");
+	    Map<String, Object> map = new HashMap<>();
+	    
+	    // DB에서 이름으로 식당 정보를 가져옴 (VO가 null인지 체크)
+	    List<TestRestVo> list = testRestDao.searchByName(r_name);	    
+	    
+	    TestRestVo matchVo = null;
+	    // 리스트가 존재하고 비어있지 않은지 확인
+	    if (list != null && !list.isEmpty()) {
+	    	System.out.println("---> 검색된 리스트 크기: " + list.size());
+	        // 정확히 일치하는 이름을 찾기 위해 반복문을 돌리거나, 첫 번째 요소를 선택	        
+	        for(TestRestVo vo : list) {	  
+	        	System.out.println("---> DB에서 가져온 이름: [" + vo.getT_r_name() + "]");
+	        	// trim()을 추가하여 공백 문제 차단
+	        	if(vo.getT_r_name() != null && vo.getT_r_name().trim().equals(r_name.trim())) {
+	                matchVo = vo;
+	                break;
+	            }
+	        }	// for문 end
+	        
+	        // 완전히 일치하는 식당이 있는 경우
+	        if(matchVo != null) {
+	            map.put("exists", true);
+	            map.put("r_idx", matchVo.getT_r_idx());
+	        } else {
+	            // 유사한 이름은 있으나 정확히 일치하는 이름은 없는 경우
+	            map.put("exists", false);
+	        }
+	        
+	    } else {
+	        // 검색 결과가 아예 없는 경우
+	        map.put("exists", false);
+	    }
+	    
+	    return map;
+	    
+	}	// checkName
+	
+	// 7. 식당 데이터 삭제
+	@RequestMapping("delete.do")
+	public String delete(@RequestParam int r_idx, RedirectAttributes ra) {
+		
+		int res = testRestDao.delete(r_idx);
+		
+		return "map/mapview";	
+	}	// delete() fin	
 	
 }

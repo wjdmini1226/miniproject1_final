@@ -44,12 +44,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			)
 			values(
 			seq_review.nextval,
-			<!--
-			#{r_idx},
 			#{m_idx},
-			-->
-			null,
-			null,
+			#{r_idx},			
 			#{v_score},
 			#{v_title},
 			#{v_content},
@@ -78,5 +74,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			where b_idx=#{ b_idx } 
 	</update>
 	-->
+	
+	<!-- 평균점수조회 -->
+	<select id="selectAvgScore" parameterType="int" resultType="double">
+	    SELECT ROUND(AVG(v_score), 1) 
+	    FROM review 
+	    WHERE v_restaurant = #{r_idx}
+	</select>
+	
+	<!-- 평균점수수정 -->
+	<update id="updateRestaurantAvgScore" parameterType="java.util.Map">
+	    UPDATE test_rest 
+	    SET t_r_avgscore = #{avg_score} 
+	    WHERE t_r_idx = #{r_idx}
+	</update>
 	
 </mapper>

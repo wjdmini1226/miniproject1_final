@@ -35,4 +35,12 @@ public interface ReviewDao {
 	int 			updateNoUse(int v_idx);
 	*/
 	
+	// 평균조회 (식당번호 r_idx를 받음)
+	double selectAvgScore(@Param("r_idx") int r_idx);
+	
+	// 평균수정 (식당번호와 평균점수를 담은 Map을 받음)
+	int updateRestaurantAvgScore(
+			@Param("r_idx") int r_idx, 
+			@Param("avg_score") double avg_score);
+	
 }	// Interface ReviewDao

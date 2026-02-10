@@ -53,14 +53,15 @@
 	                            </c:forEach>
 	                            (${vo.v_score}점)
 	                        </small>
-                        <!-- 작성자 본인만 볼 수 있는 버튼 -->
-						<c:if test="${ (user.m_idx eq vo.m_idx) or (user.m_idx eq 1) }">
+                        <!-- 작성자 or admin 만 볼 수 있는 버튼 -->
+						<c:if test="${ (member.m_idx eq vo.m_idx) 
+									or (member.m_idx eq 1) }">
 	                        <!-- form으로 함께 던질 수 있도록 비밀선물 -->
-							<input	type="hidden"  name="v_idx" value="${ vo.v_idx }">
-						
-							<input	class="btn btn-success" type="button" value="수정하기">
+	                        <form style="display:inline;">
+							<input	type="hidden"  name="v_idx" value="${ vo.v_idx }">													
 							<input	class="btn btn-danger" type="button" value="삭제하기"
-									onclick="board_delete(this.form);">
+									onclick="review_delete(this.form);">
+							</form>
 						</c:if>			
                     </div>
                 </c:forEach>

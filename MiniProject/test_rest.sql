@@ -14,4 +14,6 @@ CREATE SEQUENCE seq_test_rest START WITH 1;
 
 select * from test_rest;
 
+select * from test_rest where t_r_idx=[15];
+
 */
