@@ -8,6 +8,8 @@ m_nickname		VARCHAR2(100)	NOT NULL UNIQUE,
 m_admin			NUMBER(1)		DEFAULT 0 CHECK (m_admin IN (0, 1, 2)) -- 0 : 일반, 1 : 사장 2 : 관리자
 );
 
+select * from member;
+
 -- 어드민 생성
 INSERT INTO member (
     m_idx,

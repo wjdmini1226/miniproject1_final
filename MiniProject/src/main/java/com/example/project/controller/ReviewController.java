@@ -56,7 +56,7 @@ public class ReviewController {
 		// DB insert
 		int res = reviewDao.insert(vo);
 		
-		return "redirect:list.do";
+		return "map/mapview";
 	}	// insert() fin
 	
 	//리뷰수정 폼 띄우기
@@ -82,7 +82,7 @@ public class ReviewController {
 		// DB insert
 		int res = reviewDao.update(vo);
 		
-		return "redirect:list.do";
+		return "map/mapview";
 	}	// insert() fin
 	
 	// 리뷰 지우기
@@ -91,7 +91,7 @@ public class ReviewController {
 		
 		int res = reviewDao.delete(v_idx);
 		
-		return "redirect:list.do";	// 임시로 list.do로 보낸다. 나중에 logout.do 로 수정해야
+		return "map/mapview";	// 임시로 list.do로 보낸다. 나중에 logout.do 로 수정해야
 	}	// delete() fin		
 
 }	// class reviewController

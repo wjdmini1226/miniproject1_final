@@ -28,7 +28,16 @@ window.onload = function() { // 온로드 할때만 켜져라
 
 // 키워드 검색을 요청하는 함수입니다
 function searchPlaces() {
-
+	
+	// 변수를 선언(var 또는 const)하고 HTML 요소를 가져옵니다.
+	var keywordElement = document.getElementById('keyword');
+	
+	// 요소가 없으면 함수 종료 (에러 방지)
+    if (!keywordElement) {
+        console.error("에러: 'keyword' id를 가진 입력창을 찾을 수 없습니다.");
+        return;
+    }
+	
     var keyword = document.getElementById('keyword').value;
 
     if (!keyword.replace(/^\s+|\s+$/g, '')) {
@@ -88,76 +97,79 @@ function displayPlaces(places) {
 	    bounds.extend(placePosition);
 
 	    // ★ place를 클로저로 확실히 고정
-	    (function(marker, place) {
+		(function(marker, place) {
 
-	        // 마우스 오버
-	        kakao.maps.event.addListener(marker, 'mouseover', function() {
-	            displayInfowindow(marker, place.place_name);
-	        });
-	        kakao.maps.event.addListener(marker, 'mouseout', function() {
-	            infowindow.close();
-	        });
+		    // 마우스 오버
+		    kakao.maps.event.addListener(marker, 'mouseover', function() {
+		        displayInfowindow(marker, place.place_name);
+		    });
+		    kakao.maps.event.addListener(marker, 'mouseout', function() {
+		        infowindow.close();
+		    });
 
-			// 마커 클릭 → DB 검색 부분 수정
-			kakao.maps.event.addListener(marker, 'click', function() {
-			    fetch("/restaurant/search.do", {
-			        method: "POST",
-			        headers: { "Content-Type": "application/json" },
-			        body: JSON.stringify({
-			            name: place.place_name,
-			            address: place.address_name
-			        })
-			    })
-			    .then(res => {
-			        // 응답 본문이 비어있는지 확인하여 JSON 에러 방지
-			        return res.text().then(text => text ? JSON.parse(text) : null);
-			    })
-			    .then(data => {
-			        const targetDiv = document.getElementById("rest_list_wrap");
-			        
-			        // 1. DB에 식당이 있는 경우: rest_list.jsp 내용을 가져와 출력
-					// kakaoMap.js 내 마커 클릭 이벤트 부분
-					if (data && data.length > 0) {
-					    // 파라미터를 포함하여 요청 (이름과 주소 전달)
-					    const url = `/restaurant/rest_list.do?name=${encodeURIComponent(place.place_name)}&address=${encodeURIComponent(place.address_name)}`;
-					    
-					    fetch(url)
-					        .then(res => res.text())
-					        .then(html => {
-					            document.getElementById("rest_list_wrap").innerHTML = html;
-					        })
-					        .catch(err => console.error("목록 로드 실패:", err));
-					} 
-			        // 2. DB에 식당이 없는 경우: 등록 유도 버튼 출력
-			        else {
-			            let html = `
-			                <div style="text-align:center; padding:20px;">
-			                    <h4 style="color:#d9534f;">등록되지 않은 식당입니다.</h4>
-			                    <p><strong>${place.place_name}</strong></p>
-			                    <button onclick="location.href='/restaurant/test_insert_form.do'" 
-			                            class="btn btn-primary">
-			                        📝 직접 식당 정보 등록하기
-			                    </button>
-			                </div>
-			            `;
-			            targetDiv.innerHTML = html;
-			        }
-			    })
-			    .catch(err => {
-			        console.error("오류 발생:", err);
-			        document.getElementById("rest_list_wrap").innerHTML = "데이터를 불러오는 중 오류가 발생했습니다.";
-			    });
-			});
+		    // 마커 클릭 → DB 검색 및 화면 갱신
+		    kakao.maps.event.addListener(marker, 'click', function() {
+		        fetch("/restaurant/search.do", {
+		            method: "POST",
+		            headers: { "Content-Type": "application/json" },
+		            body: JSON.stringify({
+		                name: place.place_name,
+		                address: place.address_name
+		            })
+		        })
+		        .then(res => res.text().then(text => text ? JSON.parse(text) : null))
+		        .then(data => {
+					const restListDiv = document.getElementById("rest_list");
+			        const reviewListDiv = document.getElementById("review_list");
+			        const restWrap = document.getElementById("rest_list_wrap");
+			        const reviewWrap = document.getElementById("review_list_wrap");
+            
+		            // 데이터 로드 시 영역을 보여줌 (CSS에서 초기 display가 none인 경우)
+		            if(restWrap) restWrap.style.display = "block";
 
-	        // 목록 항목 호버
-	        itemEl.onmouseover = function () {
-	            displayInfowindow(marker, place.place_name);
-	        };
-	        itemEl.onmouseout = function () {
-	            infowindow.close();
-	        };
+		            // 1. DB에 식당이 있는 경우 (유사 데이터 포함)
+		            if (data && data.length > 0) {
+		                // 하단 유사 식당 목록 로드
+		                const restUrl = `/restaurant/rest_list.do?name=${encodeURIComponent(place.place_name)}&address=${encodeURIComponent(place.address_name)}`;
+		                fetch(restUrl)
+		                    .then(res => res.text())
+		                    .then(html => {
+		                        if(restListDiv) {
+		                            restListDiv.innerHTML = html;
+		                            restWrap.scrollTop = 0; // 스크롤 상단 이동
+		                        }
+		                    });
 
-	    })(marker, places[i]);   // ← place 전달
+		                // 왼쪽 리뷰 목록 로드
+		                const reviewUrl = `/review/review_list.do?t_r_name=${encodeURIComponent(place.place_name)}`;
+		                fetch(reviewUrl)
+		                    .then(res => res.text())
+		                    .then(html => {
+		                        if(reviewListDiv) reviewListDiv.innerHTML = html;
+		                    });
+		            } 
+		            // 2. DB에 검색 데이터가 아예 없는 경우
+		            else {
+		                let noDataHtml = `
+		                    <div style="text-align:center; padding:30px; border:1px solid #ddd; background:#fff;">
+		                        <h4 style="color:#d9534f; font-weight:bold;">등록되지 않은 식당입니다.</h4>
+		                        <p style="margin:15px 0;">카카오 맵 정보: <strong>${place.place_name}</strong></p>
+		                        <button onclick="location.href='/restaurant/test_insert_form.do'" 
+		                                class="btn btn-primary">
+		                            📝 직접 식당 정보 등록하기
+		                        </button>
+		                    </div>
+		                `;
+						if(restListDiv) restListDiv.innerHTML = "<h4>등록되지 않은 식당입니다.</h4>";
+						if(reviewListDiv) reviewListDiv.innerHTML = "<h4>리뷰가 없습니다.</h4>";
+		            }
+		        })
+		        .catch(err => {
+		            console.error("오류 발생:", err);
+		        });
+		    });
+
+		})(marker, places[i]);   // ← place 전달
 
 	    fragment.appendChild(itemEl);
 	}	

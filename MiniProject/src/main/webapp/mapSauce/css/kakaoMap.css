@@ -12,8 +12,19 @@
     height: 900px;
 }
 
-#menu_wrap {width:300px;height:100%;margin:10px 0 30px 10px;padding:5px;/*overflow-y:auto;*/
-			background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
+#menu_wrap {
+    position: relative !important; /* 지도 위가 아니라 옆에 서게 함 */
+    max-height: 500px; /* 화면의 절반 정도인 500px로 제한 (원하는 높이로 조절 가능) */
+    overflow-y: auto;  /* 내용이 길어지면 내부에서 스크롤 발생 */
+    top: 0 !important;
+    left: 0 !important;
+    width: 20% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    z-index: 1; 
+    padding: 10px; 
+    border-right: 1px solid #ccc;   
+}
 .bg_white {background:#fff;}
 #menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
 #menu_wrap .option{text-align: center;}
@@ -48,13 +59,9 @@
 #pagination .on {font-weight: bold; cursor: default;color:#777;}
 
 #map {
-    width:500px;height:250px;position:relative;overflow:hidden;text-align:center;
-}
-
-#review_wrap {
-    flex: 1;
-    border-top: 1px solid #ddd;
-    padding: 10px;
-    overflow-y: auto;
-    background: #f9f9f9;
+    width: 80%;
+    height: 100%;
+    position:relative;
+    overflow:hidden;
+    text-align:center;
 }
