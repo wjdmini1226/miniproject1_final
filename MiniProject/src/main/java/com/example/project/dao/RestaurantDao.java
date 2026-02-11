@@ -10,6 +10,7 @@ import com.example.project.vo.RestaurantVo;
 
 public interface RestaurantDao {
 	List<RestaurantVo>	selectList(Map<String, Object> map);
+	// selectList2도 아직 안 쓰는 건 아니니 지우지 않음
 	List<RestaurantVo>	selectList2(Map map); // map용. AI:오버로딩 위험
 	List<RestaurantVo>	selectList_admin();
 	
@@ -19,7 +20,10 @@ public interface RestaurantDao {
 	
 	List<RestaurantVo> searchByName(@Param("keyword") String keyword);
 	
+	List<RestaurantVo> selectListByPlaceId(String r_place_id);
+	
 	int					insert(RestaurantVo vo);
 	int					update(RestaurantVo vo);
-	int					delete(int r_idx);
+	int					delete(int r_idx);	
+	
 }

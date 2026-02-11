@@ -33,7 +33,8 @@ r_name			VARCHAR2(100)	NOT NULL,
 r_category		VARCHAR2(500),
 r_menu			VARCHAR2(2000),
 r_avgscore		NUMBER(2,1)		DEFAULT 0 CHECK (r_avgscore BETWEEN 0 AND 5),
-r_addr			VARCHAR2(300)
+r_addr			VARCHAR2(300),
+r_place_id		VARCHAR2(100)	NOT NULL
 );
 
 INSERT INTO restaurant (

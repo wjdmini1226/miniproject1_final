@@ -113,8 +113,9 @@ function displayPlaces(places) {
 			        method: "POST",
 			        headers: { "Content-Type": "application/json" },
 			        body: JSON.stringify({
-			            name: place.place_name,
-			            address: place.address_name
+						r_place_id: place.id,		// 카카오 고유 ID 전달
+						name: place.place_name,		// 참고용 이름
+			            address: place.address_name // 참고용 주소
 			        })
 			    })
 			    .then(res => res.text().then(text => text ? JSON.parse(text) : null))
@@ -126,16 +127,16 @@ function displayPlaces(places) {
 			        // 1. DB에 식당이 있는 경우 (유사 데이터 포함)
 			        if (data && data.length > 0) {
 			            
-			            // [3번 영역]: 기존 로직 유지 (식당 이름과 주소로 유사 식당 검색)
-			            const restUrl = `/restaurant/rest_list.do?name=${encodeURIComponent(place.place_name)}&address=${encodeURIComponent(place.address_name)}`;
-			            fetch(restUrl)
-			                .then(res => res.text())
-			                .then(html => {
-			                    if(restListDiv) {
-			                        restListDiv.innerHTML = html;
-			                        restWrap.scrollTop = 0;
-			                    }
-			                });
+						// [3번 영역]: r_place_id를 사용하여 정확히 일치하는 식당 정보를 가져옵니다.
+						const restUrl = `/restaurant/rest_list.do?r_place_id=${place.id}`;
+						fetch(restUrl)
+						    .then(res => res.text())
+						    .then(html => {
+						        if(restListDiv) {
+						            restListDiv.innerHTML = html;
+						            restWrap.scrollTop = 0;
+						        }
+						    });
 
 			            // [4번 영역]: 수정 로직 (r_idx와 r_idx 비교)
 			            // search.do 결과 데이터 중 첫 번째 항목의 r_idx를 사용합니다.
@@ -172,9 +173,10 @@ function displayPlaces(places) {
 			                <div style="text-align:center; padding:30px; border:1px solid #ddd; background:#fff;">
 			                    <h4 style="color:#d9534f; font-weight:bold;">등록되지 않은 식당입니다.</h4>
 			                    <p style="margin:15px 0;">카카오 맵 정보: <strong>${place.place_name}</strong></p>
-			                    <button onclick="location.href='/restaurant/test_insert_form.do?r_name=${encodeURIComponent(place.place_name)}'" 
-			                            class="btn btn-primary">📝 직접 식당 정보 등록하기
-			                    </button>
+								<button 
+onclick="location.href='/restaurant/test_insert_form.do?r_name=${encodeURIComponent(place.place_name)}&r_place_id=${place.id}'" 
+class="btn btn-primary">📝 직접 식당 정보 등록하기
+								</button>
 			                </div>
 			            `;
 			            if(restListDiv) restListDiv.innerHTML = noDataHtml;
@@ -308,7 +310,7 @@ function insertRestaurantFromKakao(name, address) {
     fetch("/restaurant/insert_from_kakao.do", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name, address: address })
+        body: JSON.stringify({ r_place_id: place.id, name: name, address: address })
     })
     .then(res => {
         if (!res.ok) {
