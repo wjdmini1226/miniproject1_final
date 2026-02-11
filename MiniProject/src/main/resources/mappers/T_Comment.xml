@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.project.dao.T_CommentDao">
+
+  
+
+  <!-- 게시글별 전체 댓글 목록 -->
+  <select id="selectListByBoard" parameterType="int" resultType="t_comment">
+    SELECT *
+    FROM t_comment
+    WHERE c_board = #{c_board}
+    ORDER BY c_ref DESC, c_step ASC
+  </select>
+
+  <!-- 댓글 1건 조회 -->
+  <select id="selectOne" parameterType="int" resultType="t_comment">
+    SELECT *
+    FROM t_comment
+    WHERE c_idx = #{c_idx}
+  </select>
+	
+	<!-- paging처리를 위한 SQL -->
+	<select id="selectPageList" parameterType="map" resultType="t_comment">
+		select * from
+		(	
+		select 
+		rank() over(order by c_idx desc) as no,
+		c.* 
+		from
+			(select * from t_comment where c_idx=#{c_idx}) c
+		)	
+		where no between #{start} and #{end}
+	</select>
+	
+	
+	
+  <!-- 원댓글 등록 후 c_ref = c_idx로 맞추기 -->
+  <update id="updateRefToSelf">
+    UPDATE t_comment
+    SET c_ref = c_idx
+    WHERE c_idx = #{c_idx}
+  </update>
+
+	<!-- 대댓글 등록 전: 같은 그룹(c_ref)에서 특정 step 초과를 +1 밀기 -->
+	<update id="updateStepForReply">
+	  <![CDATA[
+	    UPDATE t_comment
+	    SET c_step = c_step + 1
+	    WHERE c_ref = #{c_ref}
+	      AND c_step > #{c_step}
+	  ]]>
+	</update>
+
+
+  <!-- 대댓글(또는 원댓글) 등록
+       - DAO에 원댓글 insert가 없으므로, 이 insertReply를 공용으로 쓰는 형태로 작성
+       - 호출부에서 원댓글이면 (c_ref=0, c_step=0, c_depth=0) 넣고
+         insert 후 updateRefToSelf(c_idx) 호출해 c_ref를 자기 자신으로 맞추는 패턴
+  -->
+  <insert id="insertReply" parameterType="t_comment">
+    <selectKey keyProperty="c_idx" resultType="int" order="BEFORE">
+      SELECT seq_t_comment.NEXTVAL FROM dual
+    </selectKey>
+
+    INSERT INTO t_comment (
+      c_idx, c_member, c_board, c_regdate, c_content, c_ref, c_step, c_depth
+    ) VALUES (
+      #{c_idx},
+      #{c_member},
+      #{c_board},
+      SYSDATE,
+      #{c_content},
+      #{c_ref},
+      #{c_step},
+      #{c_depth}
+    )
+  </insert>
+
+
+  <!-- 댓글 내용 수정 -->
+  <update id="updateContent">
+    UPDATE t_comment
+    SET c_content = #{c_content}
+    WHERE c_idx = #{c_idx}
+  </update>
+
+  <!-- 댓글 삭제 -->
+  <delete id="delete">
+    DELETE FROM t_comment
+    WHERE c_idx = #{c_idx}
+  </delete>
+
+  <!-- 게시글 삭제 시 댓글 전체 삭제 -->
+  <delete id="deleteByBoard">
+    DELETE FROM t_comment
+    WHERE c_board = #{c_board}
+  </delete>
+
+</mapper>

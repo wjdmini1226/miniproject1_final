@@ -41,7 +41,7 @@ b_modifydate	DATE			DEFAULT SYSDATE NOT NULL
 );
 
 -- 댓글
-CREATE TABLE comment (
+CREATE TABLE t_comment (
 c_idx			NUMBER			PRIMARY KEY,
 c_member		NUMBER			REFERENCES member(m_idx) ON DELETE CASCADE,
 c_board			NUMBER			REFERENCES board(b_idx) ON DELETE CASCADE,
@@ -84,8 +84,11 @@ CREATE SEQUENCE seq_board START WITH 1;
 
 CREATE SEQUENCE seq_b_img START WITH 1;
 
-CREATE SEQUENCE seq_comment START WITH 1;
+CREATE SEQUENCE seq_t_comment START WITH 1;
 
 CREATE SEQUENCE seq_news START WITH 1;
 
 CREATE SEQUENCE seq_n_img START WITH 1;
+
+ALTER TABLE board ADD (b_is_notice CHAR(1) DEFAULT 'N' CHECK (b_is_notice IN ('Y','N')));
+ALTER TABLE board ADD (b_is_ad     CHAR(1) DEFAULT 'N' CHECK (b_is_ad IN ('Y','N')));

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.project.dao.BoardDao">
+
+  <!-- 전체조회 -->
+  <select id="selectList" resultType="board">
+    select
+      b_idx,
+      b_member as m_idx,
+      b_title,
+      b_content,
+      b_readhit,
+      b_regdate,
+      b_modifydate
+    from board
+    order by b_idx desc
+  </select>
+
+
+  <!-- 게시글 1건 -->
+  <select id="selectOne" parameterType="int" resultType="board">
+    select
+      b_idx,
+      b_member as m_idx,
+      b_title,
+      b_content,
+      b_readhit,
+      b_regdate,
+      b_modifydate
+    from board
+    where b_idx = #{value}
+  </select>
+
+
+  <select id="selectConditionList" parameterType="map" resultType="board">
+  SELECT *
+  FROM (
+    SELECT ROWNUM AS rnum, A.*
+    FROM (
+      SELECT
+        b_idx,
+        b_member as m_idx,
+        b_title,
+        b_content,
+        b_readhit,
+        b_regdate,
+        b_modifydate
+      FROM board
+      <where>
+        <if test="b_title != null and b_title != ''">
+          b_title like '%' || #{b_title} || '%'
+        </if>
+        <if test="b_content != null and b_content != ''">
+          <if test="b_title != null and b_title != ''"> AND </if>
+          b_content like '%' || #{b_content} || '%'
+        </if>
+      </where>
+      ORDER BY b_idx DESC
+    ) A
+    WHERE ROWNUM &lt;= #{end}
+  )
+  WHERE rnum &gt;= #{start}
+</select>
+
+
+  <!-- 전체 게시물수 -->
+  <select id="selectRowTotal" parameterType="map" resultType="int">
+  SELECT COUNT(*)
+  FROM board
+  <where>
+    <if test="b_title != null and b_title != ''">
+      b_title like '%' || #{b_title} || '%'
+    </if>
+    <if test="b_content != null and b_content != ''">
+      <if test="b_title != null and b_title != ''"> AND </if>
+      b_content like '%' || #{b_content} || '%'
+    </if>
+  </where>
+</select>
+
+
+  <!-- 등록 -->
+  <insert id="insert" parameterType="board">
+    insert into board (
+      b_idx, b_member, b_title, b_content, b_readhit, b_regdate, b_modifydate
+    )
+    values (
+      seq_board.nextVal,
+      #{m_idx},
+      #{b_title},
+      #{b_content},
+      0,
+      sysdate,
+      sysdate
+    )
+  </insert>
+
+
+  <!-- 수정 -->
+  <update id="update" parameterType="board">
+    update board
+    set
+      b_title = #{b_title},
+      b_content = #{b_content},
+      b_modifydate = sysdate
+    where b_idx = #{b_idx}
+  </update>
+
+
+  <!-- 조회수 증가 -->
+  <update id="updateReadHit" parameterType="int">
+    update board
+    set b_readhit = b_readhit + 1
+    where b_idx = #{value}
+  </update>
+
+  <!-- 삭제 -->
+  <delete id="delete" parameterType="int">
+    delete from board
+    where b_idx = #{value}
+  </delete>
+
+</mapper>
