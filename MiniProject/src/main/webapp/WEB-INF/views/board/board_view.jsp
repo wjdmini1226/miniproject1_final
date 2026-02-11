@@ -264,7 +264,7 @@ function doDelete(f){
 
       if(confirm("댓글은 로그인후 작성 가능합니다\n로그인 하시겠습니까?")==false) return;
 
-      location.href = "${pageContext.request.contextPath}/member/login_form.do?url=" + encodeURIComponent(location.href);
+      location.href = "${pageContext.request.contextPath}/login_form.do?url=" + encodeURIComponent(location.href);
       return;
     }
 
