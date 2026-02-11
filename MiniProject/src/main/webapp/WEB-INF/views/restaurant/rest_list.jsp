@@ -22,19 +22,18 @@
 
 	<div id="reviewBox" style="width:100%;margin:auto;margin-top:10px;">
 			
-		<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
-			<div class="col-sm-4">
-				<h4 style="font-weight:bold;">📍 주변 식당 목록</h4>
-        		<button onclick="location.href='/restaurant/test_insert_form.do'" 
-		            class="btn btn-primary">
-		        	📝 직접 식당 정보 등록하기
-		        </button> 		       	        
-       		</div>
+		<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 10px;">
+		    <h4 style="font-weight:bold; margin: 0;">📍 주변 식당 목록</h4>
+		    
+		    <button onclick="location.href='/restaurant/test_insert_form.do'" 
+		            class="btn btn-primary" style="white-space: nowrap;">
+		        📝 직접 식당 정보 등록하기
+		    </button>
 		</div>		  
 		
 		<!-- 약식식당목록 -->	  
 		<table class="table table-striped table-hover">
-			<tr class="success">
+			<tr class="info">
 			  <!-- line 1 -->
               <th width="10%">번호</th>
               <!-- line 2 -->
