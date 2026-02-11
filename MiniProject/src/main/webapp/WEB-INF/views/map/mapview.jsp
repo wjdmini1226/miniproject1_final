@@ -139,6 +139,9 @@ function rest_delete(f){
                     키워드 : <input type="text" value="동성로 맛집" id="keyword" size="10"> 
                     <button type="submit">검색</button> 
                 </form>
+                <button onclick="searchAroundMe()" class="btn btn-primary" style="margin-top:5px; width:100%;">
+			        🎯 근처 맛집 검색
+			    </button>
             </div>
             <hr>
             <ul id="placesList"></ul>

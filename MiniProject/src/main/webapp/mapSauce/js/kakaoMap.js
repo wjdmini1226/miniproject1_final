@@ -330,4 +330,22 @@ function insertRestaurantFromKakao(name, address) {
     });
 }
 
+// [추가] 현재 지도 범위 내에서 '맛집' 키워드로 검색하는 함수
+function searchAroundMe() {
+    // 1. 현재 지도의 가시 영역(Bounds)을 가져옵니다.
+    var bounds = map.getBounds(); 
 
+    // 2. 검색 옵션 설정 (현재 영역으로 제한)
+    var searchOptions = {
+        bounds: bounds,               // 현재 화면 안에서만 검색
+        location: map.getCenter(),    // 지도 중심점 기준 우선순위
+        useMapBounds: true            // 영역 내 검색 활성화
+    };
+
+    // 3. '맛집'이라는 키워드로 고정 검색을 수행합니다.
+    // 만약 입력창의 키워드를 쓰고 싶다면 document.getElementById('keyword').value 를 쓰면 됩니다.
+    ps.keywordSearch("맛집", placesSearchCB, searchOptions); 
+    
+    // 선택 사항: 검색창의 텍스트도 '맛집'으로 변경해주면 사용자에게 직관적입니다.
+    document.getElementById('keyword').value = "맛집";
+}
