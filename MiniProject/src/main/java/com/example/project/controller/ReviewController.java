@@ -1,6 +1,8 @@
 package com.example.project.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.project.dao.ReviewDao;
@@ -32,13 +35,18 @@ public class ReviewController {
 	
 	// 전체조회
 	@RequestMapping("list.do")
-	public String list(Model model) {	
-		// vo, dao와 연결하여 list 객체 생성
-		List<ReviewVo> list = reviewDao.selectList();	
-		// model에 list 담기
-		model.addAttribute("list", list);	
-		
-		return "review/review_list";		
+	public String list(Model model, 
+            @RequestParam(value="v_restaurant", required=false, defaultValue="0") int v_restaurant) {
+
+		List<ReviewVo> list;
+	    if (v_restaurant > 0) {
+	        // DAO의 리턴 타입이 List<ReviewVo>로 수정되었으므로 에러 없이 작동합니다.
+	        list = reviewDao.selectOneRestaurantList(v_restaurant);
+	    } else {
+	        list = reviewDao.selectList();
+	    }
+	    model.addAttribute("list", list);
+	    return "review/review_list";
 	}	// list() fin
 	
 	//리뷰쓰기 폼 띄우기
@@ -49,45 +57,52 @@ public class ReviewController {
 	
 	// 작성폼에서 내용 받아서 db에 끼워넣기
 	@PostMapping("insert.do")
-	public String insert(ReviewVo vo) {
-		
-		// 세션 변수명 "member"로 꺼내기
-	    MemberVo user = (MemberVo) session.getAttribute("member");
-		
-	    if (user != null) {
-	        // 세션에 저장된 실제 m_idx를 Vo에 세팅
-	        vo.setM_idx(user.getM_idx());
-	    } else {
-	        // 로그인 정보가 없으면 로그인 페이지로 리다이렉트
-	        return "redirect:../login_form.do";
-	    }
+	@ResponseBody // 에러 메시지를 자바스크립트로 출력하기 위해 추가
+	public String insert(ReviewVo vo, HttpSession session) {
 	    
-	    // 데이터 확인용 로그
-	    System.out.println("회원번호(m_idx): " + vo.getM_idx());
-	    System.out.println("식당번호(r_idx): " + vo.getR_idx());
-	    
-		// 0. 내용 : \n -> <br> 변경
-		String v_content = vo.getV_content().replaceAll("\n", "<br>");	
-		vo.setV_content(v_content);	
-		
-		// 1. DB insert
-		int res = reviewDao.insert(vo);
-		
-		// 2. 입력 성공 시 평균 점수 갱신 로직 실행
-	    if(res > 0) {
-	        // 현재 리뷰가 달린 식당 번호 (ReviewVo에 담겨온 r_idx 사용)
-	        int r_idx = vo.getR_idx(); 
-	        
-	        // 해당 식당의 새로운 평균 점수 계산
-	        double newAvg = reviewDao.selectAvgScore(r_idx);
-	        
-	        // 식당(test_rest) 테이블의 t_r_avgscore 컬럼 업데이트
-	        reviewDao.updateRestaurantAvgScore(r_idx, newAvg);
-	        
-	        System.out.println(r_idx + "번 식당 새로운 평균점수: " + newAvg);
+	    // [검증 1] 로그인 체크 (m_idx가 세션에 있는지)
+	    MemberVo member = (MemberVo) session.getAttribute("member");
+	    if (member == null) {
+	        return "<script>" +
+	               "alert('로그인이 만료되었거나 필요한 서비스입니다.');" +
+	               "location.href='/map/mapview.do';" +
+	               "</script>";
 	    }
-		
-		return "map/mapview";
+
+	    // [검증 2] 식당 번호 체크 (r_idx가 0이거나 안 넘어왔는지)
+	    if (vo.getR_idx() == 0) {
+	        return "<script>" +
+	               "alert('리뷰를 쓰기 위해 지도의 식당 마커를 다시 클릭해주세요.');" +
+	               "location.href='/map/mapview.do';" +
+	               "</script>";
+	    }
+
+	    try {
+	        // [데이터 세팅] JSP에서 넘어온 값 대신 세션의 확실한 정보를 세팅
+	        vo.setM_idx(member.getM_idx());
+
+	        // [DB 저장]
+	        int res = reviewDao.insert(vo);
+	        
+	        if(res > 0) {
+	            // 평균 점수 갱신 로직
+	            int r_idx = vo.getR_idx(); 
+	            double newAvg = reviewDao.selectAvgScore(r_idx);
+	            
+	            // scoreMap을 따로 만들 필요 없이 직접 인자로 전달 (DAO의 @Param과 매칭)
+	            reviewDao.updateRestaurantAvgScore(r_idx, newAvg);
+	            
+	            return "<script>" +
+	                   "alert('리뷰가 성공적으로 등록되었습니다.');" +
+	                   "location.href='/map/mapview.do';" +
+	                   "</script>";
+	        } else {
+	            return "<script>alert('등록에 실패했습니다.'); history.back();</script>";
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "<script>alert('서버 오류가 발생했습니다.'); location.href='/map/mapview.do';</script>";
+	    }
 	}	// insert() fin
 	
 	//리뷰수정 폼 띄우기

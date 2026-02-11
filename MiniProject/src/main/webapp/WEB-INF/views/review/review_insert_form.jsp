@@ -218,8 +218,9 @@ function checkRestaurant() {
 				    <small id="res_msg" style="display:none;"></small>
 				</div>
 				
-				<!-- 유저번호 몰래 넘기기 -->
+				<!-- 유저번호 몰래 넘기기 는 controller의 responsebody 로 대체함
 				<input type="hidden" name="m_idx" value="${member.m_idx}">
+				-->
 				
 				<!-- 별점 -->
 				<div class="common">

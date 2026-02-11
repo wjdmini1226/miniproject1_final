@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     ORDER BY r_idx DESC
 	</select>
 
-	<select id="selectList" resultType="restaurant">
+	<select id="selectList" resultType="restaurant" parameterType="restaurant">
 		SELECT
 		r.*,
 		(SELECT COUNT(*) FROM review v WHERE v.v_restaurant = r.r_idx) as r_v_count,	<!-- 
@@ -42,6 +42,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 		ORDER BY r_avgscore DESC NULLS LAST, r.r_idx DESC
 	</select>
+	
+	<select id="selectList2" resultType="restaurant" parameterType="map">
+		SELECT
+		r.*,
+		(SELECT COUNT(*) FROM review v WHERE v.v_restaurant = r.r_idx) as r_v_count,	
+		<!-- 레스토랑 r 리뷰 v 리뷰순으로 정렬 -->
+		(SELECT AVG(v_score) FROM review v WHERE v.v_restaurant = r.r_idx) as
+		r_avgscore	<!-- 평균별점으로 정렬 -->
+		FROM restaurant r
+		<where>
+			<if test="r_category != null">r_category = #{r_category}</if>
+			<if test="searchKeyword != null">AND r_name LIKE '%' || #{searchKeyword} || '%'</if>
+		</where>
+		ORDER BY r_avgscore DESC NULLS LAST, r.r_idx DESC
+	</select>
+	
+	<!-- db와 몇글자 비슷한것 찾기 -->
+	<select id="findSimilarRestaurant" resultType="restaurant">
+		<![CDATA[
+		    SELECT *
+    		FROM restaurant
+    		WHERE 
+        	REPLACE(r_name, ' ', '') LIKE '%' || REPLACE(#{name}, ' ', '') || '%'
+        	OR r_name LIKE '%' || #{keyword} || '%'
+       	 	OR r_addr LIKE '%' || #{address} || '%'
+    		ORDER BY r_idx DESC
+	    ]]>
+	</select>
+	
+	<!-- db와 몇글자 비슷한것 찾기2 혹은 review를 위한 완전일치식당 -->
+	<select id="searchByName" resultType="restaurant">
+        SELECT *
+        FROM restaurant
+        WHERE r_name LIKE '%' || #{keyword} || '%'
+    </select>
 
 	<select id="selectOne" parameterType="int"
 		resultType="restaurant">

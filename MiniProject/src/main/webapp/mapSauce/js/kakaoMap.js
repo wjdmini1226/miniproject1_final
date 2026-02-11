@@ -107,85 +107,88 @@ function displayPlaces(places) {
 		        infowindow.close();
 		    });
 
-		    // 마커 클릭 → DB 검색 및 화면 갱신
-		    kakao.maps.event.addListener(marker, 'click', function() {
-		        fetch("/restaurant/search.do", {
-		            method: "POST",
-		            headers: { "Content-Type": "application/json" },
-		            body: JSON.stringify({
-		                name: place.place_name,
-		                address: place.address_name
-		            })
-		        })
-		        .then(res => res.text().then(text => text ? JSON.parse(text) : null))
-		        .then(data => {
-					const restListDiv = document.getElementById("rest_list");
+			// 마커 클릭 → DB 검색 및 화면 갱신
+			kakao.maps.event.addListener(marker, 'click', function() {
+			    fetch("/restaurant/search.do", {
+			        method: "POST",
+			        headers: { "Content-Type": "application/json" },
+			        body: JSON.stringify({
+			            name: place.place_name,
+			            address: place.address_name
+			        })
+			    })
+			    .then(res => res.text().then(text => text ? JSON.parse(text) : null))
+			    .then(data => {
+			        const restListDiv = document.getElementById("rest_list");
 			        const reviewListDiv = document.getElementById("review_list");
-			        const restWrap = document.getElementById("rest_list_wrap");
-            
-		            // 데이터 로드 시 영역을 보여줌 (CSS에서 초기 display가 none인 경우)
-		            if(restWrap) restWrap.style.display = "block";
 
-		            // 1. DB에 식당이 있는 경우 (유사 데이터 포함)
-		            if (data && data.length > 0) {
-		                // 하단 유사 식당 목록 로드
-		                const restUrl = `/restaurant/rest_list.do?name=${encodeURIComponent(place.place_name)}&address=${encodeURIComponent(place.address_name)}`;
-		                fetch(restUrl)
-		                    .then(res => res.text())
-		                    .then(html => {
-		                        if(restListDiv) {
-		                            restListDiv.innerHTML = html;
-		                            restWrap.scrollTop = 0; // 스크롤 상단 이동
-		                        }
-		                    });
+			        // 1. DB에 식당이 있는 경우 (유사 데이터 포함)
+			        if (data && data.length > 0) {
+			            
+			            // [3번 영역]: 기존 로직 유지 (식당 이름과 주소로 유사 식당 검색)
+			            const restUrl = `/restaurant/rest_list.do?name=${encodeURIComponent(place.place_name)}&address=${encodeURIComponent(place.address_name)}`;
+			            fetch(restUrl)
+			                .then(res => res.text())
+			                .then(html => {
+			                    if(restListDiv) {
+			                        restListDiv.innerHTML = html;
+			                        restWrap.scrollTop = 0;
+			                    }
+			                });
 
-		                // 왼쪽 리뷰 목록 로드
-		                const reviewUrl = `/review/list.do?t_r_name=${encodeURIComponent(place.place_name)}`;
-		                fetch(reviewUrl)
-		                    .then(res => res.text())
-		                    .then(html => {
-								if (reviewListDiv) {
-						            // 서버에서 보낸 html 내용이 비어있거나 '검색된 내용이 없습니다' 같은 문구가 포함된 경우 체크
-						            // (tip: 서버의 list.do 결과물에서 데이터가 없을 때 특정 class나 id를 주면 체크가 더 쉽습니다)
-						            if (html.trim() === "" || html.includes("데이터가 없습니다") || html.includes("리뷰가 없습니다")) {
-						                reviewListDiv.innerHTML = `
-						                    <div style="text-align:center; padding:40px 20px; border:1px solid #eee; background:#fafafa; border-radius:8px;">
-						                        <h4 style="color:#666;">아직 작성된 리뷰가 없습니다.</h4>
-						                        <p style="margin:15px 0; color:#888;">이 식당의 첫 번째 리뷰를 남겨주세요!</p>
-						                        <button onclick="location.href='/review/insert_form.do?r_name=${encodeURIComponent(place.place_name)}'" 
-						                                class="btn btn-info" style="font-weight:bold;">
-						                            ✍️ 리뷰 작성하러 가기
-						                        </button>
-						                    </div>
-						                `;
-						            } else {
-						                reviewListDiv.innerHTML = html;
-						            }
-						        } 
-		                    });
-		            } 
-		            // 2. DB에 검색 데이터가 아예 없는 경우
-		            else {
-		                let noDataHtml = `
-		                    <div style="text-align:center; padding:30px; border:1px solid #ddd; background:#fff;">
-		                        <h4 style="color:#d9534f; font-weight:bold;">등록되지 않은 식당입니다.</h4>
-		                        <p style="margin:15px 0;">카카오 맵 정보: <strong>${place.place_name}</strong></p>
-            <button onclick="location.href='/restaurant/test_insert_form.do?t_r_name=${encodeURIComponent(place.place_name)}'" 
-                    class="btn btn-primary">📝 직접 식당 정보 등록하기
-            </button>
-		                    </div>
-		                `;
-						if(restListDiv) restListDiv.innerHTML = noDataHtml;
-						if(reviewListDiv) reviewListDiv.innerHTML = 
-						"<h4>리뷰가 없습니다. 식당이 등록되지 않았다면 먼저 등록해주세요</h4>";
-		            }
-		        })
-		        .catch(err => {
-		            console.error("오류 발생:", err);
-		        });
-		    });
+			            // [4번 영역]: 수정 로직 (t_r_idx와 v_restaurant 비교)
+			            // search.do 결과 데이터 중 첫 번째 항목의 t_r_idx를 사용합니다.
+			            const db_r_idx = data[0].t_r_idx; 
 
-		})(marker, places[i]);   // ← place 전달
+						// 리뷰 컨트롤러에 식당 고유 번호(v_restaurant)를 전달
+			            const reviewUrl = `/review/list.do?v_restaurant=${db_r_idx}`;
+			            fetch(reviewUrl).then(res => res.text()).then(html => {
+			                if (reviewListDiv) reviewListDiv.innerHTML = html;
+			            });
+			            
+			            fetch(reviewUrl)
+			                .then(res => res.text())
+			                .then(html => {
+			                    if (reviewListDiv) {
+			                        if (html.trim() === "" || html.includes("데이터가 없습니다") || html.includes("리뷰가 없습니다")) {
+			                            reviewListDiv.innerHTML = `
+			                                <div style="text-align:center; padding:40px 20px; border:1px solid #eee; background:#fafafa; border-radius:8px;">
+			                                    <h4 style="color:#666;">아직 작성된 리뷰가 없습니다.</h4>
+			                                    <p style="margin:15px 0; color:#888;">이 식당의 고유번호(${target_idx})와 연결된 첫 리뷰를 남겨주세요!</p>
+			                                    <button onclick="location.href='/review/insert_form.do?v_restaurant=${target_idx}'" 
+			                                            class="btn btn-info" style="font-weight:bold;">
+			                                        ✍️ 리뷰 작성하러 가기
+			                                    </button>
+			                                </div>
+			                            `;
+			                        } else {
+			                            reviewListDiv.innerHTML = html;
+			                        }
+			                    } 
+			                });
+			        } 
+			        // 2. DB에 검색 데이터가 아예 없는 경우
+			        else {
+			            // ... (기존과 동일하게 유지)
+			            let noDataHtml = `
+			                <div style="text-align:center; padding:30px; border:1px solid #ddd; background:#fff;">
+			                    <h4 style="color:#d9534f; font-weight:bold;">등록되지 않은 식당입니다.</h4>
+			                    <p style="margin:15px 0;">카카오 맵 정보: <strong>${place.place_name}</strong></p>
+			                    <button onclick="location.href='/restaurant/test_insert_form.do?t_r_name=${encodeURIComponent(place.place_name)}'" 
+			                            class="btn btn-primary">📝 직접 식당 정보 등록하기
+			                    </button>
+			                </div>
+			            `;
+			            if(restListDiv) restListDiv.innerHTML = noDataHtml;
+			            if(reviewListDiv) reviewListDiv.innerHTML = "<h4>리뷰가 없습니다. 식당 등록을 먼저 진행해주세요.</h4>";
+			        }
+			    })
+			    .catch(err => {
+			        console.error("오류 발생:", err);
+			    });
+			});
+
+		})(marker, places[i]);   // ← place 전달. function(marker...) ends
 
 	    fragment.appendChild(itemEl);
 	}	

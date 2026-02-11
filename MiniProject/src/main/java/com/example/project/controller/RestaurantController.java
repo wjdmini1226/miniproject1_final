@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.project.dao.RestaurantDao;
-import com.example.project.dao.TestRestDao;
 import com.example.project.vo.MemberVo;
 import com.example.project.vo.RestaurantVo;
-import com.example.project.vo.TestRestVo;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -28,9 +26,6 @@ public class RestaurantController {
 
 	@Autowired
 	RestaurantDao restaurantDao;
-	
-	@Autowired
-	TestRestDao testRestDao;
 	
 	// 1. 관리 메인 대시보드
 	@RequestMapping("dashboard.do")
@@ -86,7 +81,7 @@ public class RestaurantController {
 	// 5. 레스토랑 목록 표시
 	@RequestMapping("rest_list.do")
 	public String rest_list(String name, String address, Model model) {
-	    List<TestRestVo> list;
+	    List<RestaurantVo> list;
 	    Map<String, Object> map = new HashMap<>(); // String, String 대신 Object 권장
 	    
 	    if (name != null && !name.trim().isEmpty()) {
@@ -97,10 +92,10 @@ public class RestaurantController {
 	        map.put("keyword", keyword);
 	        map.put("address", address);
 	        
-	        list = testRestDao.findSimilarRestaurant(map); // 이제 타입이 일치함!
+	        list = restaurantDao.findSimilarRestaurant(map); // 이제 타입이 일치함!
 	    } else {
 	        // 전체 목록
-	        list = testRestDao.selectList(map);
+	        list = restaurantDao.selectList2(map);
 	    }
 
 	    model.addAttribute("list", list);
@@ -119,7 +114,7 @@ public class RestaurantController {
 	// 5-2. 테스트용임시데이터입력
 	
 	@RequestMapping("test_insert.do")
-	public String test_insert(TestRestVo vo, HttpSession session, 
+	public String test_insert(RestaurantVo vo, HttpSession session, 
 		   RedirectAttributes ra) {
 		
 		// 세션정보 소환
@@ -127,10 +122,10 @@ public class RestaurantController {
 		// 비로그인시 로그인 유도
 	    if(member == null){return "redirect:/login_form.do";}
 	    // 현재 로그인유저 정보를 멤버정보에 추가
-	    vo.setT_r_member(member.getM_idx());
+	    vo.setR_member(member.getM_idx());
 		
 		// DB insert
-		int res = testRestDao.insert(vo);
+		int res = restaurantDao.insert(vo);
 		
 		return "/map/mapview";
 	}
@@ -143,7 +138,7 @@ public class RestaurantController {
 	// 5-3. 데이터와 카카오 연결
 	@PostMapping("/search.do")
 	@ResponseBody
-	public List<TestRestVo> searchRestaurant(@RequestBody Map<String, String> param) {
+	public List<RestaurantVo> searchRestaurant(@RequestBody Map<String, String> param) {
 
 		// 안전하게 null 체크
 	    String name = param.getOrDefault("name", "").replaceAll("\\s+", "");
@@ -158,7 +153,7 @@ public class RestaurantController {
 	    map.put("keyword", keyword);
 	    map.put("address", address);
 
-	    return testRestDao.findSimilarRestaurant(map);
+	    return restaurantDao.findSimilarRestaurant(map);
 	}
 	
 	// 5-4 카카오 지도에서 클릭한 식당을 DB에 바로 등록
@@ -170,20 +165,19 @@ public class RestaurantController {
 
 	    String name    = param.get("name");
 	    String address = param.get("address");
-
-	    // 로그인 안 한 경우 테스트용으로 member_idx = 1 사용
+	    
 	    MemberVo member = (MemberVo) session.getAttribute("member");
 	    int memberIdx = (member != null) ? member.getM_idx() : 1;
 
-	    TestRestVo vo = new TestRestVo();
-	    vo.setT_r_name(name);
-	    vo.setT_r_addr(address);
-	    vo.setT_r_category("기타");
-	    vo.setT_r_menu("메뉴 미등록");
-	    vo.setT_r_avgscore(0.0);
-	    vo.setT_r_member(memberIdx);
+	    RestaurantVo vo = new RestaurantVo();
+	    vo.setR_name(name);
+	    vo.setR_addr(address);
+	    vo.setR_category("기타");
+	    vo.setR_menu("메뉴 미등록");
+	    vo.setR_avgscore(0.0);
+	    vo.setR_member(memberIdx);
 
-	    int res = testRestDao.insert(vo);
+	    int res = restaurantDao.insert(vo);
 
 	    if (res > 0) {
 	        result.put("success", true);
@@ -204,17 +198,17 @@ public class RestaurantController {
 	    Map<String, Object> map = new HashMap<>();
 	    
 	    // DB에서 이름으로 식당 정보를 가져옴 (VO가 null인지 체크)
-	    List<TestRestVo> list = testRestDao.searchByName(r_name);	    
+	    List<RestaurantVo> list = restaurantDao.searchByName(r_name);	    
 	    
-	    TestRestVo matchVo = null;
+	    RestaurantVo matchVo = null;
 	    // 리스트가 존재하고 비어있지 않은지 확인
 	    if (list != null && !list.isEmpty()) {
 	    	System.out.println("---> 검색된 리스트 크기: " + list.size());
 	        // 정확히 일치하는 이름을 찾기 위해 반복문을 돌리거나, 첫 번째 요소를 선택	        
-	        for(TestRestVo vo : list) {	  
-	        	System.out.println("---> DB에서 가져온 이름: [" + vo.getT_r_name() + "]");
+	        for(RestaurantVo vo : list) {	  
+	        	System.out.println("---> DB에서 가져온 이름: [" + vo.getR_name() + "]");
 	        	// trim()을 추가하여 공백 문제 차단
-	        	if(vo.getT_r_name() != null && vo.getT_r_name().trim().equals(r_name.trim())) {
+	        	if(vo.getR_name() != null && vo.getR_name().trim().equals(r_name.trim())) {
 	                matchVo = vo;
 	                break;
 	            }
@@ -223,7 +217,7 @@ public class RestaurantController {
 	        // 완전히 일치하는 식당이 있는 경우
 	        if(matchVo != null) {
 	            map.put("exists", true);
-	            map.put("r_idx", matchVo.getT_r_idx());
+	            map.put("r_idx", matchVo.getR_idx());
 	        } else {
 	            // 유사한 이름은 있으나 정확히 일치하는 이름은 없는 경우
 	            map.put("exists", false);
@@ -242,7 +236,7 @@ public class RestaurantController {
 	@RequestMapping("delete.do")
 	public String delete(@RequestParam int r_idx, RedirectAttributes ra) {
 		
-		int res = testRestDao.delete(r_idx);
+		int res = restaurantDao.delete(r_idx);
 		
 		return "map/mapview";	
 	}	// delete() fin	

@@ -19,47 +19,8 @@
   <script type="text/javascript" 
   src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=60c46c644f3be913dd3a7af2d733d805&libraries=services"></script>
 
-  <!-- map 전용 CSS -->
-  <link rel="stylesheet" href="/mapSauce/css/kakaoMap.css">
-  
-  <style>
-
-/* 전체 레이아웃 */
-.layout { display: flex; flex-direction: column; width: 100%; height: auto; }
-
-/* 지도 아래 목록 영역 (가로 배치) */
-.content_bottom_area {
-    display: flex;
-    padding: 20px;
-    gap: 20px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #ddd;
-}
-
-/* 식당/리뷰 박스 스타일 */
-#rest_list_wrap, #review_wrap {
-    flex: 1; /* 너비를 반반씩 */
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    max-height: 500px; /* 너무 길면 내부 스크롤 */
-    overflow-y: auto;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* 검색창(기존 menu_wrap) 위치 고정 */
-#menu_wrap {
-    position: absolute; /* 지도 위에 띄움 */
-    top: 10px;
-    left: 10px;
-    z-index: 2; /* 지도보다 위로 */
-    width: 300px; /* 너비 적절히 조절 */
-    height: 550px;
-    background: rgba(255, 255, 255, 0.9);
-    overflow-y: auto;
-}
-  </style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="/mapSauce/css/kakaoMap.css"> 
 
   <!-- 카카오산 js 분리 -->
   <script src="${pageContext.request.contextPath}/mapSauce/js/kakaoMap.js"></script>
@@ -135,7 +96,7 @@ function review_delete(f){
         }
     });
 	
-}	// review_delete() end
+}	// review_delete(f) end
 
 function rest_delete(f){
 	
@@ -157,13 +118,13 @@ function rest_delete(f){
         }
     });
 	
-}	// rest_delete() end
+}	// rest_delete(f) end
  
 </script><!-- review/rest용 js 끝 -->
 
 </head>
 <body>
-  
+  <!--  
 <div class="layout">
     <div style="display: flex; width: 100%; height: 500px; border-bottom: 1px solid #ddd;"">
     	<div id="menu_wrap" class="bg_white">
@@ -193,7 +154,39 @@ function rest_delete(f){
 	        </div>
 	    </div>
 	</div>
-</div><!-- layout end -->
+</div><!-- layout end --> 
+
+<div class="main_container">
+    <div class="left_section">
+        <div id="menu_wrap">
+            <div class="option">
+                <form onsubmit="searchPlaces(); return false;">
+                    키워드 : <input type="text" value="대구 맛집" id="keyword" size="10"> 
+                    <button type="submit">검색</button> 
+                </form>
+            </div>
+            <hr>
+            <ul id="placesList"></ul>
+            <div id="pagination"></div>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <div class="right_section">
+        <div id="rest_list_wrap" class="list_panel">
+            <h4 style="font-weight:bold;">📍 주변 식당 목록</h4>
+            <div id="rest_list">
+                <p class="text-muted">마커를 클릭하면 식당 정보가 표시됩니다.</p>
+            </div>
+        </div>
+        
+        <div id="review_list_wrap" class="list_panel">
+            <div id="review_list">
+                <p class="text-muted">식당을 선택하면 리뷰가 표시됩니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

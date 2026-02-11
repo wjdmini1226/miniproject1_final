@@ -44,13 +44,13 @@ INSERT INTO restaurant (
 		r_menu,
 		r_category
 		) VALUES (
-		15,
+		4,
 		1,
-		'르퐁뒤',
-		'대구 중구 동성로1길 26',
-		'스테이크',
-		'양식'
-		)
+		'호남원조식당',
+		'대구 서구 달구벌대로375길 26-1',
+		'향토음식',
+		'한식'
+		);
 
 select * from restaurant;
 

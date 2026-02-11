@@ -13,11 +13,11 @@ public interface ReviewDao {
 	// 전체조회
 	List<ReviewVo>		selectList();
 	
-	// 개별리뷰조회(식당번호)
-	ReviewVo			selectOneRestaurantList(@Param("r_idx") int r_idx);
-	
-	// 개별리뷰조회(회원번호 즉 사장)
-	ReviewVo			selectOneMemberList(@Param("m_idx") int m_idx);
+	// [수정] 한 식당에 여러 리뷰가 있을 수 있으므로 List로 반환해야 합니다.
+    List<ReviewVo> selectOneRestaurantList(@Param("r_idx") int r_idx);
+    
+    // [수정] 사장이 쓴 리뷰나 관리자가 보는 리뷰도 목록일 가능성이 높으므로 List 권장
+    List<ReviewVo> selectOneMemberList(@Param("m_idx") int m_idx);
 	
 	// 개별리뷰조회(리뷰번호)
 	ReviewVo			selectOneReview(@Param("v_idx") int v_idx);

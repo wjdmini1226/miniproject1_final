@@ -12,10 +12,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 1개선택(식당번호) -->
 	<select id="selectOneRestaurantList" resultType="review" parameterType="int">
-		select * from review
-		where r_idx = #{r_idx}
-		order by v_regdate desc
-	</select>
+    SELECT 
+        v_idx,
+        v_member as m_idx,	v_restaurant as r_idx,	v_score,
+        v_title,
+        v_content,
+        v_regdate
+    FROM review
+    WHERE v_restaurant = #{r_idx}  ORDER BY v_regdate DESC
+</select>
 	
 	<!-- 1개선택(회원번호) -->
 	<select id="selectOneMemberList" resultType="review" parameterType="int">
@@ -25,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 1개선택(리뷰번호) -->
-	<select id="selectOneReview">
+	<select id="selectOneReview" resultType="review">
 		select * from review 
 		where v_idx = #{v_idx}
 	</select>
@@ -84,9 +89,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 평균점수수정 -->
 	<update id="updateRestaurantAvgScore" parameterType="java.util.Map">
-	    UPDATE test_rest 
-	    SET t_r_avgscore = #{avg_score} 
-	    WHERE t_r_idx = #{r_idx}
+	    UPDATE restaurant 
+	    SET r_avgscore = #{avg_score} 
+	    WHERE r_idx = #{r_idx}
 	</update>
 	
 </mapper>

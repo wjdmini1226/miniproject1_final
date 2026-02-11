@@ -35,11 +35,11 @@
 		<table class="table table-striped table-hover">
 			<tr class="success">
 			  <!-- line 1 -->
-              <th width="20%">번호</th>
+              <th width="10%">번호</th>
               <!-- line 2 -->
-              <th width="20%">제목</th>
+              <th width="10%">제목</th>
               <!-- line 3 -->
-              <th width="20%">메뉴</th>
+              <th width="15%">메뉴</th>
               <!-- line 4 -->
               <th>주소</th>
               <!-- line 5 -->
