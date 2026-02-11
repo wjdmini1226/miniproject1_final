@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.project.dao.ReviewDao">
+
+	<!-- 전체조회 -->
+	<select id="selectList" resultType="review">
+		select * from review
+		order by v_idx desc
+	</select>
+	
+	<!-- 1개선택(식당번호) -->
+	<select id="selectOneRestaurantList" resultType="review" parameterType="int">
+    SELECT 
+        v_idx,
+        v_member as m_idx,	v_restaurant as r_idx,	v_score,
+        v_title,
+        v_content,
+        v_regdate
+    FROM review
+    WHERE v_restaurant = #{r_idx}  ORDER BY v_regdate DESC
+</select>
+	
+	<!-- 1개선택(회원번호) -->
+	<select id="selectOneMemberList" resultType="review" parameterType="int">
+		select * from review
+		where m_idx = #{m_idx}
+		order by v_regdate desc
+	</select>
+	
+	<!-- 1개선택(리뷰번호) -->
+	<select id="selectOneReview" resultType="review">
+		select * from review 
+		where v_idx = #{v_idx}
+	</select>
+	
+	<!-- 입력 -->
+	<insert id="insert" parameterType="review">
+		insert into review 
+			(
+			v_idx,
+			v_member,
+			v_restaurant,
+			v_score,
+			v_title,
+			v_content,
+			v_regdate
+			)
+			values(
+			seq_review.nextval,
+			#{m_idx},
+			#{r_idx},			
+			#{v_score},
+			#{v_title},
+			#{v_content},
+			sysdate
+		)
+	</insert>
+	
+	<!-- 수정 : 점수, 제목, 내용, 일자만 -->
+	<update id="update" parameterType="review">
+		update review set
+				v_score		= #{v_score},
+				v_title		= #{v_title},
+				v_content	= #{v_content},
+				v_regdate		= sysdate
+			where v_idx = #{v_idx}	
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete">
+		delete from review where v_idx=#{v_idx}
+	</delete>
+	
+	<!-- 대안 : 삭제처리 : 정말로 지우지는 않고 비활성화만 한다  
+	<update id="updateNoUse" parameterType="int"> 
+		update board set b_use='n'
+			where b_idx=#{ b_idx } 
+	</update>
+	-->
+	
+	<!-- 평균점수조회 -->
+	<select id="selectAvgScore" parameterType="int" resultType="double">
+	    SELECT ROUND(AVG(v_score), 1) 
+	    FROM review 
+	    WHERE v_restaurant = #{r_idx}
+	</select>
+	
+	<!-- 평균점수수정 -->
+	<update id="updateRestaurantAvgScore" parameterType="java.util.Map">
+	    UPDATE restaurant 
+	    SET r_avgscore = #{avg_score} 
+	    WHERE r_idx = #{r_idx}
+	</update>
+	
+</mapper>

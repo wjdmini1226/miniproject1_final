@@ -8,6 +8,7 @@
 <title>로그인 - 프로젝트 제목</title>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
+
 /* 1. 메인 페이지와 동일한 기본 설정 */
 body {
 	margin: 0;
@@ -128,6 +129,9 @@ header {
 	display: none;
 }
 </style>
+
+
+
 </head>
 <body>
 

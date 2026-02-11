@@ -15,4 +15,5 @@ public class RestaurantVo {
 	double	r_avgscore;
 	String	r_addr;
 	int		r_v_count;
+	int 	calc_avgscore;
 }

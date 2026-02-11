@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.project.vo.MemberVo;
 
@@ -12,7 +13,7 @@ public interface MemberDao {
 	List<MemberVo>	selectList();
 	
 	MemberVo		selectOne(int m_idx);
-	MemberVo		selectById(String m_id);
+	MemberVo 		selectById(String m_id);
 	
 	int				insert(MemberVo vo);
 	int				checkDuplicate(Map<String, Object> map);
