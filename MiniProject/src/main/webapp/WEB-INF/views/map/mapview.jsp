@@ -167,7 +167,7 @@ function rest_delete(f){
         <div id="menu_wrap">
             <div class="option">
                 <form onsubmit="searchPlaces(); return false;">
-                    키워드 : <input type="text" value="대구 맛집" id="keyword" size="10"> 
+                    키워드 : <input type="text" value="동성로 맛집" id="keyword" size="10"> 
                     <button type="submit">검색</button> 
                 </form>
             </div>
