@@ -24,6 +24,7 @@
 			
 		<div class="row" style="margin-top: 30px; margin-bottom: 5px;">
 			<div class="col-sm-4">
+				<h4 style="font-weight:bold;">📍 주변 식당 목록</h4>
         		<button onclick="location.href='/restaurant/test_insert_form.do'" 
 		            class="btn btn-primary">
 		        	📝 직접 식당 정보 등록하기
@@ -68,7 +69,7 @@
 				</td>     
 				
 				<!-- admin 만 볼 수 있는 버튼 -->
-				<c:if test="${ member.m_idx eq 1 }">
+				<c:if test="${ member.m_admin eq 2 }">
 					<td>
                        <!-- form으로 함께 던질 수 있도록 비밀선물 -->	
                        <form style="display:inline;">

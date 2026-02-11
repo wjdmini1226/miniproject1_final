@@ -55,7 +55,7 @@ onclick="location.href='${pageContext.request.contextPath}/review/insert_form.do
 	                        </small>
                         <!-- 작성자 or admin 만 볼 수 있는 버튼 -->
 						<c:if test="${ (member.m_idx eq vo.m_idx) 
-									or (member.m_idx eq 1) }">
+									or (member.m_admin eq 2) }">
 	                        <!-- form으로 함께 던질 수 있도록 비밀선물 -->
 	                        <form style="display:inline;">
 							<input	type="hidden"  name="v_idx" value="${ vo.v_idx }">													

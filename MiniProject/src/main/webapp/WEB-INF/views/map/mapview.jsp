@@ -130,37 +130,6 @@ function rest_delete(f){
 
 </head>
 <body>
-  <!--  
-<div class="layout">
-    <div style="display: flex; width: 100%; height: 500px; border-bottom: 1px solid #ddd;"">
-    	<div id="menu_wrap" class="bg_white">
-    		<div class="option">
-       			<form onsubmit="searchPlaces(); return false;">
-            		키워드 : <input type="text" value="대구 맛집" id="keyword" size="10"> 
-           		 <button type="submit">검색하기</button> 
-        		</form>
-    		</div>
-    		<hr>
-    		<ul id="placesList"></ul>
-    		<div id="pagination"></div>
-    	</div>
-    	<div id="map"></div>
-	</div>
-
-	<div class="content_bottom_area" style="display: flex; gap: 20px; padding: 20px;">
-	    <div id="rest_list_wrap" style="flex: 1; min-height: 400px; border: 1px solid #ddd; background: white; overflow-y: auto;">
-	        <div id="rest_list" style="padding: 15px;">
-	            <p class="text-muted">마커를 클릭하면 주변 식당이 표시됩니다.</p>
-	        </div>
-	    </div>
-
-	    <div id="review_list_wrap" style="flex: 1; min-height: 400px; border: 1px solid #ddd; background: white; overflow-y: auto;">
-	        <div id="review_list" style="padding: 15px;">
-	            <p class="text-muted">식당을 선택하면 리뷰가 표시됩니다.</p>
-	        </div>
-	    </div>
-	</div>
-</div><!-- layout end --> 
 
 <div class="main_container">
     <div class="left_section">
@@ -179,8 +148,7 @@ function rest_delete(f){
     </div>
 
     <div class="right_section">
-        <div id="rest_list_wrap" class="list_panel">
-            <h4 style="font-weight:bold;">📍 주변 식당 목록</h4>
+        <div id="rest_list_wrap" class="list_panel">            
             <div id="rest_list">
                 <p class="text-muted">마커를 클릭하면 식당 정보가 표시됩니다.</p>
             </div>
