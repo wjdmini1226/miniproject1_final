@@ -19,7 +19,7 @@ public class AdminController {
     @Autowired
     RestaurantDao restaurant_dao;
 
-    @RequestMapping("admin/main.do")
+    @RequestMapping("/admin/main.do")
     public String adminMain(HttpSession session, Model model) {
         MemberVo member = (MemberVo) session.getAttribute("member");
         
@@ -36,14 +36,14 @@ public class AdminController {
     }
 
     // 회원 강제 탈퇴 (이미 있는 delete 매퍼 활용)
-    @RequestMapping("member_del.do")
+    @RequestMapping("/admin/member_del.do")
     public String memberDel(int m_idx) {
         member_dao.delete(m_idx);
         return "redirect:main.do";
     }
 
     // 식당 정보 삭제 (이미 있는 delete 매퍼 활용)
-    @RequestMapping("res_del.do")
+    @RequestMapping("/admin/res_del.do")
     public String resDel(int r_idx) {
         restaurant_dao.delete(r_idx);
         return "redirect:main.do";

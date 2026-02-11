@@ -148,8 +148,7 @@ td {
 						<td>${r.r_category}</td>
 						<td>${r.r_addr}</td>
 						<td>★ ${r.r_avgscore}</td>
-						<td><a href="/restaurant/modify_info.do?r_idx=${r.r_idx}"
-							class="btn-edit">정보수정</a>
+						<td>
 							<button class="btn-del"
 								onclick="if(confirm('폐업 처리하시겠습니까?')) location.href='res_del.do?r_idx=${r.r_idx}'">폐업처리</button>
 						</td>
