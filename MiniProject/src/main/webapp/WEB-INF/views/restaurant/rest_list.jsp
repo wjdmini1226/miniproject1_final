@@ -52,19 +52,19 @@
         	<c:forEach var="vo"  items="${ list }">
               <tr>
                 <!-- line 1 -->
-                <td>${ vo.t_r_idx }</td>  
+                <td>${ vo.r_idx }</td>  
                 <!-- line 2 -->              
-                <td>${ vo.t_r_name }</td>
+                <td>${ vo.r_name }</td>
                 <!-- line 3 -->
-                <td>${ vo.t_r_menu }</td>
+                <td>${ vo.r_menu }</td>
                 <!-- line 4 -->
-                <td>${ vo.t_r_addr }</td>   
+                <td>${ vo.r_addr }</td>   
                 <!-- line 5 --> 
                 <td>    
-	                <c:forEach begin="1" end="${vo.t_r_avgscore}">
+	                <c:forEach begin="1" end="${vo.r_avgscore}">
 		             ⭐
 		            </c:forEach>
-		            (${vo.t_r_avgscore}점)      
+		            (${vo.r_avgscore}점)      
 				</td>     
 				
 				<!-- admin 만 볼 수 있는 버튼 -->
@@ -72,7 +72,7 @@
 					<td>
                        <!-- form으로 함께 던질 수 있도록 비밀선물 -->	
                        <form style="display:inline;">
-                       <input type="hidden" name="r_idx" value="${ vo.t_r_idx }">	
+                       <input type="hidden" name="r_idx" value="${ vo.r_idx }">	
 					   <input	class="btn btn-danger" type="button" value="삭제하기"
 					    		onclick="rest_delete(this.form);">
 					   </form>

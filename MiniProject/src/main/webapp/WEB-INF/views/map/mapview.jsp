@@ -33,24 +33,30 @@
 //$(function(){comment_list(1);});
 $(document).ready(function(){
 	console.log("페이지 로딩됨");
-	review_list();
+	review_list(0);
 	rest_list(); // 나중에는 일치함수를 별도로 만들어서 대체해넣자
 });
   
-function review_list(){		
+function review_list(r_idx){
 	
-	// 현재 보고 있는 page 정보를 전역변수에 저장
-	// g_current_comment_page = page;
-	// 이것 살리려면 함수 이름은 review_list(page){}로 간다
+	console.log("선택된 식당 번호:", r_idx); // 디버깅용
+	
+	// 만약 값이 없으면 서버에 요청하지 않음
+	// r_idx 값이 undefined인 경우 서버 요청을 차단
+    if(!r_idx || r_idx == "undefined"){
+        console.log("등록되지 않은 식당 혹은 data 전달 오류입니다");
+        return;
+    }
 	
 	// ajax로 요청
 	$.ajax({
 		url		:	"${pageContext.request.contextPath}/review/list.do",
+		data    : { "r_idx": r_idx }, // 서버로 식당 번호 전달
 		dataType:	"html",			
 		success	:	function(res_data){
 					$("#review_list").html(res_data);
 					},
-		error	:	function(err){ alert(err.responseText); }	
+		error	:	function(err){ alert("리뷰 로드 실패: " + err.status); }	
 	})
 }	// review_list() end
 

@@ -36,15 +36,21 @@ public class ReviewController {
 	// 전체조회
 	@RequestMapping("list.do")
 	public String list(Model model, 
-            @RequestParam(value="v_restaurant", required=false, defaultValue="0") int v_restaurant) {
-
+            @RequestParam(value="r_idx", required=false, defaultValue="0") int r_idx) {
+		
 		List<ReviewVo> list;
-	    if (v_restaurant > 0) {
+		
+		if(r_idx == 0) {
+	        return "review/review_list"; // 빈 리스트 페이지 반환
+	    }
+		
+	    if (r_idx > 0) {
 	        // DAO의 리턴 타입이 List<ReviewVo>로 수정되었으므로 에러 없이 작동합니다.
-	        list = reviewDao.selectOneRestaurantList(v_restaurant);
+	        list = reviewDao.selectOneRestaurantList(r_idx);
 	    } else {
 	        list = reviewDao.selectList();
 	    }
+	    
 	    model.addAttribute("list", list);
 	    return "review/review_list";
 	}	// list() fin

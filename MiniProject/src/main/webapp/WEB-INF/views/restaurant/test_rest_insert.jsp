@@ -25,19 +25,19 @@
 
 <script type="text/javascript">
 	function send(f){
-			let t_r_name 	 = f.t_r_name.value.trim();
-			let t_r_category = f.t_r_category.value.trim();
-			let t_r_menu 	 = f.t_r_menu.value.trim();
-			let t_r_addr 	 = f.t_r_addr.value.trim();
+			let r_name 	 = f.r_name.value.trim();
+			let r_category = f.r_category.value.trim();
+			let r_menu 	 = f.r_menu.value.trim();
+			let r_addr 	 = f.r_addr.value.trim();
 			// db에 default 없으므로 최초 입력시 default를 추가
 			// 유저에게는 보이지 않음
-			let t_r_avescore = 5;
+			let r_avescore = 5;
 			
 			
-			if(t_r_name==""){
+			if(r_name==""){
 				alert("식당명을 입력하세요");
-				f.t_r_name.value="";
-				f.t_r_name.focus();
+				f.r_name.value="";
+				f.r_name.focus();
 				return;
 			}			
 			
@@ -55,7 +55,7 @@
 		        	console.log(data);	        	
 		        	
 		        	//주소넣기
-		        	$("#t_r_addr").val(data.address);
+		        	$("#r_addr").val(data.address);
 		        	
 		        }
 		  }).open(); 
@@ -76,25 +76,25 @@
 				<!-- 1 식당이름 -->
 				<div class="common">
 					<label>식당이름</label>
-					<input class="form-control" name="t_r_name" value="${t_r_name}">
+					<input class="form-control" name="r_name" value="${r_name}">
 				</div>
 				
 				<!-- 2 식당종류 -->
 				<div class="common">
 					<label>식당종류</label>
-					<input class="form-control" name="t_r_category">
+					<input class="form-control" name="r_category">
 				</div>
 				
 				<!-- 3 식당메뉴 -->
 				<div class="common">
 					<label>식당메뉴</label>
-					<input class="form-control" name="t_r_menu">
+					<input class="form-control" name="r_menu">
 				</div>
 				
 				<!-- 4 식당주소 -->
 				<div class="common">
 					<label>식당주소</label>
-					<input class="form-control" name="t_r_addr" id="t_r_addr">
+					<input class="form-control" name="r_addr" id="r_addr">
                     <input class="btn btn-primary" type="button" value="주소찾기"
                            onclick="find_addr();">
 				</div>

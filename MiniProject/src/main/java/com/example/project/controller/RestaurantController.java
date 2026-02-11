@@ -102,16 +102,16 @@ public class RestaurantController {
 	    return "restaurant/rest_list";
 	}
 	
-	// 5-1. 테스트용임시데이터입력form
+	// 5-1. 식당데이터입력form
 	@RequestMapping("test_insert_form.do")
-	public String test_insert_form(String t_r_name, Model model) {
+	public String test_insert_form(String r_name, Model model) {
 		
-		model.addAttribute("t_r_name", t_r_name);
+		model.addAttribute("r_name", r_name);
 		
 		return "restaurant/test_rest_insert";
 	}
 	
-	// 5-2. 테스트용임시데이터입력
+	// 5-2. 식당데이터입력
 	
 	@RequestMapping("test_insert.do")
 	public String test_insert(RestaurantVo vo, HttpSession session, 
@@ -144,8 +144,6 @@ public class RestaurantController {
 	    String name = param.getOrDefault("name", "").replaceAll("\\s+", "");
 	    String address = param.getOrDefault("address", "");
 	    String keyword = name.length() >= 2 ? name.substring(0, 2) : name;
-
-	    System.out.println("검색 요청 → name: " + name + ", keyword: " + keyword);
 
 	    // Map으로 넘김
 	    Map<String, Object> map = new HashMap<>();
@@ -194,7 +192,7 @@ public class RestaurantController {
 	@RequestMapping("check_name.do")
 	@ResponseBody
 	public Map<String, Object> checkName(String r_name) {
-		System.out.println("---> 입력받은 이름: [" + r_name + "]");
+
 	    Map<String, Object> map = new HashMap<>();
 	    
 	    // DB에서 이름으로 식당 정보를 가져옴 (VO가 null인지 체크)
@@ -203,10 +201,9 @@ public class RestaurantController {
 	    RestaurantVo matchVo = null;
 	    // 리스트가 존재하고 비어있지 않은지 확인
 	    if (list != null && !list.isEmpty()) {
-	    	System.out.println("---> 검색된 리스트 크기: " + list.size());
+
 	        // 정확히 일치하는 이름을 찾기 위해 반복문을 돌리거나, 첫 번째 요소를 선택	        
 	        for(RestaurantVo vo : list) {	  
-	        	System.out.println("---> DB에서 가져온 이름: [" + vo.getR_name() + "]");
 	        	// trim()을 추가하여 공백 문제 차단
 	        	if(vo.getR_name() != null && vo.getR_name().trim().equals(r_name.trim())) {
 	                matchVo = vo;

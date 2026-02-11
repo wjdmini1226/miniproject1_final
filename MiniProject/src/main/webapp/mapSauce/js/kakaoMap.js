@@ -121,6 +121,7 @@ function displayPlaces(places) {
 			    .then(data => {
 			        const restListDiv = document.getElementById("rest_list");
 			        const reviewListDiv = document.getElementById("review_list");
+					const restWrap = document.getElementById("rest_list_wrap");
 
 			        // 1. DB에 식당이 있는 경우 (유사 데이터 포함)
 			        if (data && data.length > 0) {
@@ -136,37 +137,34 @@ function displayPlaces(places) {
 			                    }
 			                });
 
-			            // [4번 영역]: 수정 로직 (t_r_idx와 v_restaurant 비교)
-			            // search.do 결과 데이터 중 첫 번째 항목의 t_r_idx를 사용합니다.
-			            const db_r_idx = data[0].t_r_idx; 
+			            // [4번 영역]: 수정 로직 (r_idx와 r_idx 비교)
+			            // search.do 결과 데이터 중 첫 번째 항목의 r_idx를 사용합니다.
+			            const db_r_idx = data[0].r_idx; 
 
-						// 리뷰 컨트롤러에 식당 고유 번호(v_restaurant)를 전달
-			            const reviewUrl = `/review/list.do?v_restaurant=${db_r_idx}`;
-			            fetch(reviewUrl).then(res => res.text()).then(html => {
-			                if (reviewListDiv) reviewListDiv.innerHTML = html;
-			            });
-			            
-			            fetch(reviewUrl)
-			                .then(res => res.text())
-			                .then(html => {
-			                    if (reviewListDiv) {
-			                        if (html.trim() === "" || html.includes("데이터가 없습니다") || html.includes("리뷰가 없습니다")) {
-			                            reviewListDiv.innerHTML = `
-			                                <div style="text-align:center; padding:40px 20px; border:1px solid #eee; background:#fafafa; border-radius:8px;">
-			                                    <h4 style="color:#666;">아직 작성된 리뷰가 없습니다.</h4>
-			                                    <p style="margin:15px 0; color:#888;">이 식당의 고유번호(${target_idx})와 연결된 첫 리뷰를 남겨주세요!</p>
-			                                    <button onclick="location.href='/review/insert_form.do?v_restaurant=${target_idx}'" 
-			                                            class="btn btn-info" style="font-weight:bold;">
-			                                        ✍️ 리뷰 작성하러 가기
-			                                    </button>
-			                                </div>
-			                            `;
-			                        } else {
-			                            reviewListDiv.innerHTML = html;
-			                        }
-			                    } 
-			                });
-			        } 
+						// 리뷰 컨트롤러에 식당 고유 번호(r_idx)를 전달
+			            const reviewUrl = `/review/list.do?r_idx=${db_r_idx}`;
+						fetch(reviewUrl)
+				            .then(res => res.text())
+				            .then(html => {
+				                if (reviewListDiv) {
+				                    // 서버에서 가져온 HTML이 비어있거나 특정 문구가 포함된 경우 처리
+				                    if (!html.trim() || html.includes("데이터가 없습니다") || html.includes("리뷰가 없습니다")) {
+				                        reviewListDiv.innerHTML = `
+				                            <div style="text-align:center; padding:40px 20px; border:1px solid #eee; background:#fafafa; border-radius:8px;">
+				                                <h4 style="color:#666;">아직 작성된 리뷰가 없습니다.</h4>
+				                                <p style="margin:15px 0; color:#888;">이 식당의 고유번호(${db_r_idx})와 연결된 첫 리뷰를 남겨주세요!</p>
+				                                <button onclick="location.href='/review/insert_form.do?r_idx=${db_r_idx}'" 
+				                                        class="btn btn-info" style="font-weight:bold;">
+				                                    ✍️ 리뷰 작성하러 가기
+				                                </button>
+				                            </div>
+				                        `;
+				                    } else {
+				                        reviewListDiv.innerHTML = html;
+				                    }
+				                } 
+				            });
+			        }	// if : db에 데이터 있는경우 
 			        // 2. DB에 검색 데이터가 아예 없는 경우
 			        else {
 			            // ... (기존과 동일하게 유지)
@@ -174,7 +172,7 @@ function displayPlaces(places) {
 			                <div style="text-align:center; padding:30px; border:1px solid #ddd; background:#fff;">
 			                    <h4 style="color:#d9534f; font-weight:bold;">등록되지 않은 식당입니다.</h4>
 			                    <p style="margin:15px 0;">카카오 맵 정보: <strong>${place.place_name}</strong></p>
-			                    <button onclick="location.href='/restaurant/test_insert_form.do?t_r_name=${encodeURIComponent(place.place_name)}'" 
+			                    <button onclick="location.href='/restaurant/test_insert_form.do?r_name=${encodeURIComponent(place.place_name)}'" 
 			                            class="btn btn-primary">📝 직접 식당 정보 등록하기
 			                    </button>
 			                </div>
