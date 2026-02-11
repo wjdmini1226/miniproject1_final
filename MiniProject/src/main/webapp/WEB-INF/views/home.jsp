@@ -183,7 +183,7 @@ header {
 			<p>에디터가 엄선한 맛집 트렌드와 뉴스</p>
 		</div>
 		<div class="column list"
-			onclick="location.href='/restaurant/list.do';">
+			onclick="location.href='/map/mapview.do';">
 			<h2>맛집 리스트</h2>
 			<p>실패 없는 맛집 탐방!</p>
 		</div>
