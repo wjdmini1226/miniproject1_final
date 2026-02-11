@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.project.dao.NewsDao">
+
+	<insert id="insert" parameterType="news">
+		<selectKey keyProperty="n_idx" resultType="int" order="BEFORE">
+			select seq_news.nextVal from dual
+		</selectKey>
+		insert into news values(
+		#{n_idx},
+		#{n_title},
+		#{n_company},
+		sysdate,
+		default,
+		#{n_content}
+		)
+	</insert>
+
+	<select id="selectPageList" resultType="news" parameterType="Map">
+		select * from (
+			select rank() over(order by n_idx desc) as no, n.*
+			from (select * from news) n
+		) where no between #{ start } and #{ end }
+	</select>
+	
+	<select id="selectRowTotal" resultType="int">
+	   select nvl(count(*),0) from news
+	</select>
+
+	<select id="selectOne" parameterType="int"
+		resultType="news">
+		select * from news where n_idx = #{n_idx}
+	</select>
+
+	<update id="update" parameterType="news">
+		update news set
+			n_title		= #{n_title},
+			n_company	= #{n_company},
+			n_content	= #{n_content}
+		where n_idx = #{n_idx}
+	</update>
+	
+	<update id="read_update" parameterType="int">
+		update news set
+			n_readhit	= n_readhit + 1
+		where n_idx = #{n_idx}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from news where n_idx = #{n_idx}
+	</delete>
+</mapper>

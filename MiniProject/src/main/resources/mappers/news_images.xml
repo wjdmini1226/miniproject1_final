@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.project.dao.NewsImagesDao">
+
+	<insert id="insertNull" parameterType="String">
+		insert into news_images values(
+		seq_n_img.nextVal,
+		null,
+		#{n_i_name}
+		)
+	</insert>
+	
+	<insert id="insert" parameterType="news_image">
+		insert into news_images values(
+		seq_n_img.nextVal,
+		#{n_idx},
+		#{n_i_name}
+		)
+	</insert>
+
+	<select id="select" parameterType="int"
+		resultType="news_image">
+		select * from news_images where n_i_idx = #{n_i_idx}
+	</select>
+	<select id="selectRelation" parameterType="Map"
+		resultType="news_image">
+		select * from news_images where n_idx = #{n_idx} and n_i_name = #{n_i_name}
+	</select>
+
+	<select id="selectNews" parameterType="int"
+		resultType="news_image">
+		select * from news_images where n_idx = #{n_idx}
+	</select>
+
+	<select id="selectName" parameterType="String"
+		resultType="news_image">
+		select * from news_images where n_i_name = #{n_i_name} and n_idx is not null
+	</select>
+
+	<select id="selectOrphanName" parameterType="String"
+		resultType="news_image">
+		select * from news_images where n_i_name = #{n_i_name} and n_idx is null
+	</select>
+
+	<select id="selectOrphans" resultType="news_image">
+		select * from news_images where n_idx is null
+	</select>
+	
+	<select id="getNames" resultType="String">
+		select unique n_i_name from news_images
+	</select>
+	
+	<update id="update" parameterType="news_image">
+		update news_images set
+			n_idx		= #{n_idx}
+		where n_i_idx = #{n_i_idx}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete from news_images where n_i_idx = #{n_i_idx}
+	</delete>
+
+	<delete id="deleteNews" parameterType="int">
+		delete from news_images where n_idx = #{n_idx}
+	</delete>
+</mapper>
