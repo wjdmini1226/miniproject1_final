@@ -62,6 +62,16 @@ n_readhit		NUMBER			DEFAULT 0,
 n_content		CLOB			NOT NULL
 );
 
+-- 뉴스 이미지
+CREATE TABLE news_images (
+n_i_idx			NUMBER			PRIMARY KEY,
+n_idx			NUMBER,
+n_i_name		VARCHAR2(500)	NOT NULL,
+
+CONSTRAINT fk_news_images FOREIGN KEY(n_idx)
+REFERENCES news(n_idx) ON DELETE SET NULL
+);
+
 CREATE SEQUENCE seq_member START WITH 1;
 
 CREATE SEQUENCE seq_rest START WITH 1;
