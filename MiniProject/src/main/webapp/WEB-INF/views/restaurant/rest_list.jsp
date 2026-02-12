@@ -1,22 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>  
     
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>    
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>    
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
     
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>review_list JSP</title>	
-
-	<script type="text/javascript">
-	
-	function insert_form(){location.href = 
-		"${pageContext.request.contextPath}/restaurant/insert_form.do";}	
-	
-	</script>
-
+    <title>review_list JSP</title>
   </head>
 <body>
 
@@ -25,11 +17,28 @@
 		<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 10px;">
 		    <h4 style="font-weight:bold; margin: 0;">📍 주변 식당 목록</h4>
 		    
-		    <button onclick="location.href='/restaurant/insert_form.do'" 
-		            class="btn btn-primary" style="white-space: nowrap;">
+		    <button onclick="goToInsertForm()" 
+	            class="btn btn-primary" style="white-space: nowrap;">
 		        📝 직접 식당 정보 등록하기
 		    </button>
-		</div>		  
+		</div>	
+		
+		<script type="text/javascript">
+			function goToInsertForm() {
+			    // kakaoMap.js에 선언한 selectedPlace 변수를 참조합니다.
+			    if (!selectedPlace) {
+			        alert("지도에서 등록할 식당을 먼저 클릭해주세요!");
+			        return;
+			    }
+			
+			    // 선택된 식당 정보를 쿼리 스트링으로 만들어 이동
+			    let name = encodeURIComponent(selectedPlace.place_name);
+			    let id = selectedPlace.id;
+			    let addr = encodeURIComponent(selectedPlace.address_name);
+			
+			    location.href = "/restaurant/insert_form.do?r_name=" + name + "&r_place_id=" + id + "&r_addr=" + addr;
+			} 	  
+		</script>
 		
 		<!-- 약식식당목록 -->	  
 		<table class="table table-striped table-hover">

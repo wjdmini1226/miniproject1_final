@@ -93,9 +93,16 @@ public class RestaurantController {
 	
 	// 5-1. 식당데이터입력form (아이디도 함께 전달받음)
 	@RequestMapping("insert_form.do")
-	public String test_insert_form(String r_name, String r_place_id, Model model) {
+	public String insert_form(
+	        @RequestParam(value="r_name", required=false) String r_name, 
+	        @RequestParam(value="r_place_id", required=false) String r_place_id,
+	        @RequestParam(value="r_addr", required=false) String r_addr,
+	        Model model) {
+
 	    model.addAttribute("r_name", r_name);
-	    model.addAttribute("r_place_id", r_place_id); // [추가]
+	    model.addAttribute("r_place_id", r_place_id);
+	    model.addAttribute("r_addr", r_addr);
+	    
 	    return "restaurant/rest_insert_form";
 	}
 	

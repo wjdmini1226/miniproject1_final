@@ -19,10 +19,12 @@
 	<div id="review_sidebar" style="padding: 15px; background: #f9f9f9; height: 100%; border-right: 1px solid #ddd;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h4 style="font-weight: bold; margin: 0; color: #333;">💬 방문자 리뷰</h4>        
-        <button class="btn btn-sm btn-primary" 
-onclick="location.href='${pageContext.request.contextPath}/review/insert_form.do?r_idx=${param.r_idx}'">
-            리뷰 쓰기
-        </button>
+        <c:if test="${param.r_idx > 0}">
+        	<button class="btn btn-sm btn-primary" 
+	onclick="location.href='${pageContext.request.contextPath}/review/insert_form.do?r_idx=${param.r_idx}'">
+            	리뷰 쓰기
+        	</button>
+        </c:if>
     </div>
 
     <c:choose>
