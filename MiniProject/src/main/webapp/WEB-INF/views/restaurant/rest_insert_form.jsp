@@ -124,7 +124,7 @@
 				<!-- 4 식당주소 -->
 				<div class="common">
 					<label>식당주소</label>
-					<input class="form-control" name="r_addr" id="r_addr" value="${param.r_addr}" readonly>
+					<input class="form-control" name="r_addr" id="r_addr" value="${r_addr}" readonly>
 	                   <input class="btn btn-primary" type="button" value="주소찾기"
 	                          onclick="find_addr();">
 				</div>

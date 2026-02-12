@@ -180,8 +180,8 @@ function displayPlaces(places) {
 			                    <h4 style="color:#d9534f; font-weight:bold;">등록되지 않은 식당입니다.</h4>
 			                    <p style="margin:15px 0;">카카오 맵 정보: <strong>${place.place_name}</strong></p>
 								<button 
-onclick="location.href='/restaurant/insert_form.do?r_name=${encodeURIComponent(place.place_name)}&r_place_id=${place.id}'" 
-class="btn btn-primary">📝 직접 식당 정보 등록하기
+onclick="location.href='/restaurant/insert_form.do?r_name=${encodeURIComponent(place.place_name)}&r_place_id=${place.id}&r_addr=${encodeURIComponent(place.address_name)}'" 
+                class="btn btn-primary">📝 직접 식당 정보 등록하기
 								</button>
 			                </div>
 			            `;
