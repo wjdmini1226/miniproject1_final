@@ -32,6 +32,7 @@
 			// db에 default 없으므로 최초 입력시 default를 추가
 			// 유저에게는 보이지 않음
 			let r_avescore = 5;
+			let r_place_id = f.r_place_id.value.trim(); // 추가
 			
 			
 			if(r_name==""){
@@ -40,6 +41,12 @@
 				f.r_name.focus();
 				return;
 			}			
+			
+			// 카카오 맵을 통해 들어온 데이터인지 확인 (필요 시)
+		    if(r_place_id==""){
+		        alert("잘못된 접근입니다. 지도에서 식당을 선택해주세요.");
+		        return;
+		    }
 			
 			f.method="POST";
 			f.action="test_insert.do";
@@ -69,6 +76,9 @@
 
 <form>
 	 <div id="box">
+	 
+	 <input type="hidden" name="r_place_id" value="${param.r_place_id}">
+	 
 		<!-- Bootstrap 3.x  Panel -->
 		<div class="panel panel-primary">
 			<div class="panel-heading">임시식당입력</div>

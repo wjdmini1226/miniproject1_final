@@ -13,7 +13,7 @@
 	<script type="text/javascript">
 	
 	function insert_form(){location.href = 
-		"${pageContext.request.contextPath}/restaurant/test_insert_form.do";}	
+		"${pageContext.request.contextPath}/restaurant/insert_form.do";}	
 	
 	</script>
 
@@ -25,7 +25,7 @@
 		<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 10px;">
 		    <h4 style="font-weight:bold; margin: 0;">📍 주변 식당 목록</h4>
 		    
-		    <button onclick="location.href='/restaurant/test_insert_form.do'" 
+		    <button onclick="location.href='/restaurant/insert_form.do'" 
 		            class="btn btn-primary" style="white-space: nowrap;">
 		        📝 직접 식당 정보 등록하기
 		    </button>

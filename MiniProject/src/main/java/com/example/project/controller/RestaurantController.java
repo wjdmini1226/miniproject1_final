@@ -72,9 +72,6 @@ public class RestaurantController {
 	public String reviewManage(HttpSession session, Model model) {
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		
-		// List<ReviewVo> list = reviewDao.selectList(r_idx);
-	    // model.addAttribute("review_list", list);
-		
 		return "restaurant/review_manage";
 	}
 	
@@ -87,7 +84,7 @@ public class RestaurantController {
 	        // [수정] 유사 검색 대신 고유 ID로 정확히 조회
 	        list = restaurantDao.selectListByPlaceId(r_place_id); 
 	    } else {
-	        list = restaurantDao.selectList2(new HashMap<>()); // 전체 목록
+	        list = restaurantDao.selectList(new HashMap<>()); // 전체 목록
 	    }
 
 	    model.addAttribute("list", list);
@@ -95,11 +92,11 @@ public class RestaurantController {
 	}
 	
 	// 5-1. 식당데이터입력form (아이디도 함께 전달받음)
-	@RequestMapping("test_insert_form.do")
+	@RequestMapping("insert_form.do")
 	public String test_insert_form(String r_name, String r_place_id, Model model) {
 	    model.addAttribute("r_name", r_name);
 	    model.addAttribute("r_place_id", r_place_id); // [추가]
-	    return "restaurant/test_rest_insert";
+	    return "restaurant/rest_insert_form";
 	}
 	
 	// 5-2. 식당데이터입력
