@@ -54,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		calc_avgscore	<!-- 평균별점으로 정렬 -->
 		FROM restaurant r
 		<where>
+			<if test="r_place_id != null">r_place_id = #{r_place_id}</if>
 			<if test="r_category != null">r_category = #{r_category}</if>
 			<if test="searchKeyword != null">AND r_name LIKE '%' || #{searchKeyword} || '%'</if>
 		</where>
@@ -86,7 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE r_member = #{m_idx}
 	</select>
 	
-	<select id="selectOneByPlaceId" resultType="restaurant" parameterType="String">
+	<select id="selectListByPlaceId" resultType="restaurant" parameterType="String">
 	    SELECT * FROM restaurant 
 	    WHERE r_place_id = #{r_place_id}
 	</select>

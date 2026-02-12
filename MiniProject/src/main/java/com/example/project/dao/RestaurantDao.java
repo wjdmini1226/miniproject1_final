@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
-import org.jspecify.annotations.Nullable;
 
 import com.example.project.vo.RestaurantVo;
 
@@ -19,8 +18,9 @@ public interface RestaurantDao {
 	public List<RestaurantVo> findSimilarRestaurant(Map map);
 	
 	List<RestaurantVo> searchByName(@Param("keyword") String keyword);
-	
-	List<RestaurantVo> selectListByPlaceId(String r_place_id);
+		
+	// [추가] 카카오 고유 ID로 식당 정보 가져오기
+    List<RestaurantVo> selectListByPlaceId(String r_place_id);
 	
 	int					insert(RestaurantVo vo);
 	int					update(RestaurantVo vo);
