@@ -137,10 +137,10 @@
     <div class="cmt-top">
       <div class="cmt-writer">${vo.c_member}</div>
 
-      <!-- 작성자만 삭제 권한 -->
-      <c:if test="${ member.m_idx eq vo.c_member}">
-        <input class="btn btn-danger cmt-del" type="button" value="✕"
-               onclick="t_comment_delete('${vo.c_idx}');">
+      <!-- 작성자, 관리자만 삭제 권한 -->
+         <c:if test="${member.m_idx eq vo.c_member or member.m_admin eq 2}">
+           <input class="btn btn-danger cmt-del" type="button" value="✕"
+                           onclick="t_comment_delete('${vo.c_idx}');">
       </c:if>
     </div>
 
