@@ -101,7 +101,7 @@
 	 
 		<!-- Bootstrap 3.x  Panel -->
 		<div class="panel panel-primary">
-			<div class="panel-heading">임시식당입력</div>
+			<div class="panel-heading">식당정보입력</div>
 			<div class="panel-body">
 				<!-- 1 식당이름 -->
 				<div class="common">
