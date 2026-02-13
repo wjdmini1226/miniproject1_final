@@ -16,4 +16,5 @@ public class RestaurantVo {
 	String	r_addr;
 	int		r_v_count;
 	int 	calc_avgscore;
+	String	r_place_id;
 }

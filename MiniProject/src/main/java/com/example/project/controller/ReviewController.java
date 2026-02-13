@@ -40,15 +40,12 @@ public class ReviewController {
 		
 		List<ReviewVo> list;
 		
-		if(r_idx == 0) {
-	        return "review/review_list"; // 빈 리스트 페이지 반환
-	    }
-		
-	    if (r_idx > 0) {
-	        // DAO의 리턴 타입이 List<ReviewVo>로 수정되었으므로 에러 없이 작동합니다.
-	        list = reviewDao.selectOneRestaurantList(r_idx);
+		// r_idx가 0이면(기본값) 전체 조회를 수행합니다.
+	    if (r_idx == 0) {
+	        list = reviewDao.selectList(); // 전체 리뷰 조회
 	    } else {
-	        list = reviewDao.selectList();
+	        // r_idx가 0이 아니면(특정 식당 선택 시) 해당 식당의 리뷰만 조회
+	        list = reviewDao.selectOneRestaurantList(r_idx);
 	    }
 	    
 	    model.addAttribute("list", list);

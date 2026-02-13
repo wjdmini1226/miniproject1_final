@@ -69,7 +69,7 @@ function checkRestaurant() {
                 
             } else {
                 if (confirm("등록되지 않은 식당입니다. 식당 등록 페이지로 이동하시겠습니까?")) {
-                    location.href = "${pageContext.request.contextPath}/restaurant/test_insert_form.do";
+                    location.href = "${pageContext.request.contextPath}/restaurant/insert_form.do";
                 }
                 msg.css("color", "red").text("❌ 등록되지 않은 식당입니다.");
                 isRestaurantValid = false;

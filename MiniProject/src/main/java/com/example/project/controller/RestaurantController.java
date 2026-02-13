@@ -72,43 +72,38 @@ public class RestaurantController {
 	public String reviewManage(HttpSession session, Model model) {
 		MemberVo member = (MemberVo) session.getAttribute("member");
 		
-		// List<ReviewVo> list = reviewDao.selectList(r_idx);
-	    // model.addAttribute("review_list", list);
-		
 		return "restaurant/review_manage";
 	}
 	
-	// 5. 레스토랑 목록 표시
+	// 5. 레스토랑 목록 표시 (r_place_id 기반으로 변경)
 	@RequestMapping("rest_list.do")
-	public String rest_list(String name, String address, Model model) {
+	public String rest_list(String r_place_id, Model model) {
 	    List<RestaurantVo> list;
-	    Map<String, Object> map = new HashMap<>(); // String, String 대신 Object 권장
 	    
-	    if (name != null && !name.trim().isEmpty()) {
-	        // 검색어가 있는 경우 (마커 클릭)
-	        String keyword = name.length() >= 2 ? name.substring(0, 2) : name;
-	        
-	        map.put("name", name);
-	        map.put("keyword", keyword);
-	        map.put("address", address);
-	        
-	        list = restaurantDao.findSimilarRestaurant(map); // 이제 타입이 일치함!
+	    if (r_place_id != null && !r_place_id.trim().isEmpty()) {
+	        // [수정] 유사 검색 대신 고유 ID로 정확히 조회
+	        list = restaurantDao.selectListByPlaceId(r_place_id); 
 	    } else {
-	        // 전체 목록
-	        list = restaurantDao.selectList2(map);
+	        list = restaurantDao.selectList(new HashMap<>()); // 전체 목록
 	    }
 
 	    model.addAttribute("list", list);
 	    return "restaurant/rest_list";
 	}
 	
-	// 5-1. 식당데이터입력form
-	@RequestMapping("test_insert_form.do")
-	public String test_insert_form(String r_name, Model model) {
-		
-		model.addAttribute("r_name", r_name);
-		
-		return "restaurant/test_rest_insert";
+	// 5-1. 식당데이터입력form (아이디도 함께 전달받음)
+	@RequestMapping("insert_form.do")
+	public String insert_form(
+	        @RequestParam(value="r_name", required=false) String r_name, 
+	        @RequestParam(value="r_place_id", required=false) String r_place_id,
+	        @RequestParam(value="r_addr", required=false) String r_addr,
+	        Model model) {
+
+	    model.addAttribute("r_name", r_name);
+	    model.addAttribute("r_place_id", r_place_id);
+	    model.addAttribute("r_addr", r_addr);
+	    
+	    return "restaurant/rest_insert_form";
 	}
 	
 	// 5-2. 식당데이터입력
@@ -135,34 +130,27 @@ public class RestaurantController {
 	    return "mapview";
 	}
 	
-	// 5-3. 데이터와 카카오 연결
+	// 5-3. 데이터와 카카오 연결 (마커 클릭 시 호출)
 	@PostMapping("/search.do")
 	@ResponseBody
 	public List<RestaurantVo> searchRestaurant(@RequestBody Map<String, String> param) {
+	    // [수정] JS에서 보낸 r_place_id를 꺼냅니다.
+	    String r_place_id = param.get("r_place_id");
 
-		// 안전하게 null 체크
-	    String name = param.getOrDefault("name", "").replaceAll("\\s+", "");
-	    String address = param.getOrDefault("address", "");
-	    String keyword = name.length() >= 2 ? name.substring(0, 2) : name;
-
-	    // Map으로 넘김
-	    Map<String, Object> map = new HashMap<>();
-	    map.put("name", name);
-	    map.put("keyword", keyword);
-	    map.put("address", address);
-
-	    return restaurantDao.findSimilarRestaurant(map);
+	    // DB에서 고유 ID로 검색하여 결과 반환
+	    return restaurantDao.selectListByPlaceId(r_place_id);
 	}
 	
 	// 5-4 카카오 지도에서 클릭한 식당을 DB에 바로 등록
 	@PostMapping("insert_from_kakao.do")
 	@ResponseBody
 	public Map<String, Object> insertFromKakao(@RequestBody Map<String, String> param, HttpSession session) {
-
 	    Map<String, Object> result = new HashMap<>();
 
-	    String name    = param.get("name");
-	    String address = param.get("address");
+	    // [수정] param에서 직접 데이터를 꺼냅니다.
+	    String name    = param.get("r_name");
+	    String address = param.get("r_addr");
+	    String r_place_id = param.get("r_place_id"); // [수정] 변수 선언 오류 해결
 	    
 	    MemberVo member = (MemberVo) session.getAttribute("member");
 	    int memberIdx = (member != null) ? member.getM_idx() : 1;
@@ -170,6 +158,7 @@ public class RestaurantController {
 	    RestaurantVo vo = new RestaurantVo();
 	    vo.setR_name(name);
 	    vo.setR_addr(address);
+	    vo.setR_place_id(r_place_id); // [수정]
 	    vo.setR_category("기타");
 	    vo.setR_menu("메뉴 미등록");
 	    vo.setR_avgscore(0.0);
@@ -184,7 +173,6 @@ public class RestaurantController {
 	        result.put("success", false);
 	        result.put("message", "DB 삽입 실패");
 	    }
-
 	    return result;
 	}	// insertFormKakao
 	

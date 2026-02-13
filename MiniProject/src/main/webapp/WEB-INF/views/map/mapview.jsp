@@ -28,6 +28,9 @@
   <!-- review/rest용 js -->
   
 <script type="text/javascript">
+
+function insert_form(){location.href = 
+	"${pageContext.request.contextPath}/restaurant/insert_form.do";}
   
 //jQuery 초기화되면 댓글 1번목록으로 돌아가라
 //$(function(){comment_list(1);});
@@ -37,13 +40,11 @@ $(document).ready(function(){
 	rest_list(); // 나중에는 일치함수를 별도로 만들어서 대체해넣자
 });
   
-function review_list(r_idx){
-	
-	console.log("선택된 식당 번호:", r_idx); // 디버깅용
+function review_list(r_idx){	
 	
 	// 만약 값이 없으면 서버에 요청하지 않음
 	// r_idx 값이 undefined인 경우 서버 요청을 차단
-    if(!r_idx || r_idx == "undefined"){
+    if(typeof r_idx == "undefined"){
         console.log("등록되지 않은 식당 혹은 data 전달 오류입니다");
         return;
     }

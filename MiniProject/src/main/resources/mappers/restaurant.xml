@@ -11,14 +11,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		r_name,
 		r_addr,
 		r_menu,
-		r_category
+		r_category,
+		r_place_id
 		) VALUES (
 		seq_rest.NEXTVAL,
 		#{r_member, jdbcType=VARCHAR},
 		#{r_name, jdbcType=VARCHAR},
 		#{r_addr, jdbcType=VARCHAR},
 		#{r_menu, jdbcType=VARCHAR },
-		#{r_category, jdbcType=VARCHAR}
+		#{r_category, jdbcType=VARCHAR},
+		#{r_place_id, jdbcType=VARCHAR}
 		)
 	</insert>
 	
@@ -27,23 +29,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     restaurant 
     ORDER BY r_idx DESC
 	</select>
-
-	<select id="selectList" resultType="restaurant" parameterType="restaurant">
-		SELECT
-		r.*,
-		(SELECT COUNT(*) FROM review v WHERE v.v_restaurant = r.r_idx) as r_v_count,	<!-- 
-			레스토랑 r 리뷰 v 리뷰순으로 정렬 -->
-		(SELECT AVG(v_score) FROM review v WHERE v.v_restaurant = r.r_idx) as
-		r_avgscore	<!-- 평균별점으로 정렬 -->
-		FROM restaurant r
-		<where>
-			<if test="r_category != null">r_category = #{r_category}</if>
-			<if test="searchKeyword != null">AND r_name LIKE '%' || #{searchKeyword} || '%'</if>
-		</where>
-		ORDER BY r_avgscore DESC NULLS LAST, r.r_idx DESC
-	</select>
 	
-	<select id="selectList2" resultType="restaurant" parameterType="map">
+	<select id="selectList" resultType="restaurant" parameterType="map">
 		SELECT
 		r.*,
 		(SELECT COUNT(*) FROM review v WHERE v.v_restaurant = r.r_idx) as calc_v_count,	
@@ -52,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		calc_avgscore	<!-- 평균별점으로 정렬 -->
 		FROM restaurant r
 		<where>
+			<if test="r_place_id != null">r_place_id = #{r_place_id}</if>
 			<if test="r_category != null">r_category = #{r_category}</if>
 			<if test="searchKeyword != null">AND r_name LIKE '%' || #{searchKeyword} || '%'</if>
 		</where>
@@ -82,6 +70,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultType="restaurant">
 		SELECT * FROM restaurant
 		WHERE r_member = #{m_idx}
+	</select>
+	
+	<select id="selectListByPlaceId" resultType="restaurant" parameterType="String">
+	    SELECT * FROM restaurant 
+	    WHERE r_place_id = #{r_place_id}
 	</select>
 
 	<update id="update" parameterType="restaurant">
