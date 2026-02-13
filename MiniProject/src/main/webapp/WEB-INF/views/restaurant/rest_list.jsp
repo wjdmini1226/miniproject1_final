@@ -14,8 +14,17 @@
 
 	<div id="reviewBox" style="width:100%;margin:auto;margin-top:10px;">
 			
-		<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 10px;">
-		    <h4 style="font-weight:bold; margin: 0;">📍 주변 식당 목록</h4>
+		<div style="display: flex; 
+					justify-content: space-between; 
+					align-items: center; 
+					margin-top: 30px; 
+					margin-bottom: 10px;
+					gap: 10px;">
+		    <h4 style="font-weight:bold; margin: 0;">📍 주변 식당 목록</h4>		    
+		    
+		    <button type="button" class="btn btn-default" onclick="location.href='${pageContext.request.contextPath}/home.do'">
+		        <span class="glyphicon glyphicon-home"></span> 홈으로 돌아가기
+		    </button>			
 		    
 		    <button onclick="goToInsertForm()" 
 	            class="btn btn-primary" style="white-space: nowrap;">
