@@ -183,6 +183,9 @@ function displayPlaces(places) {
 onclick="location.href='/restaurant/insert_form.do?r_name=${encodeURIComponent(place.place_name)}&r_place_id=${place.id}&r_addr=${encodeURIComponent(place.address_name)}'" 
                 class="btn btn-primary">📝 직접 식당 정보 등록하기
 								</button>
+								<button type="button" class="btn btn-default" onclick="location.href='/home.do'">
+										        <span class="glyphicon glyphicon-home"></span> 홈으로 돌아가기
+								</button>
 			                </div>
 			            `;
 			            if(restListDiv) restListDiv.innerHTML = noDataHtml;
